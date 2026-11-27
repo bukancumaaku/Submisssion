@@ -80,6 +80,19 @@
     </div>
   </section>
 
+  <!-- Mode "buka langsung" (default di iPhone/iPad: login Google diblokir di dalam iframe) -->
+  <section id="launcher" class="screen" hidden>
+    <div class="box">
+      <img class="logo" src="icons/adit-240.jpg" alt="Adit" width="112" height="112">
+      <h1>BCA Admin</h1>
+      <p class="muted" id="launcher-text">Membuka dashboard…</p>
+      <a class="btn primary" id="launcher-open" href="#">Buka dashboard</a>
+      <button class="btn ghost" type="button" id="launcher-frame">Tampilkan di dalam aplikasi</button>
+      <button class="btn ghost" type="button" id="launcher-change">Ganti URL admin</button>
+      <p class="hint" id="launcher-hint">Di iPhone, login Google hanya bisa di halaman Google langsung, jadi dashboard dibuka di luar bingkai aplikasi.</p>
+    </div>
+  </section>
+
   <!-- Dashboard di dalam aplikasi -->
   <section id="app" hidden>
     <iframe id="frame" title="Dashboard admin Bukan Cuma Aku" allow="clipboard-write"></iframe>
@@ -96,6 +109,7 @@
     <div id="menu" role="menu" hidden>
       <button type="button" role="menuitem" id="m-reload">↻ Muat ulang dashboard</button>
       <a role="menuitem" id="m-direct" href="#">↗ Buka langsung (kalau perlu login Google)</a>
+      <button type="button" role="menuitem" id="m-mode">⇱ Selalu buka langsung</button>
       <button type="button" role="menuitem" id="m-change">⚙ Ganti URL admin</button>
     </div>
   </section>
@@ -110,15 +124,51 @@
   function getUrl() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
   function setUrl(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* abaikan */ } }
 
+  // iPhone/iPad (semua browser di iOS = WebKit) memblokir cookie login Google di dalam iframe → error 401.
+  var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var MODE_KEY = 'bca_admin_mode';
+  function getMode() {
+    var m = '';
+    try { m = localStorage.getItem(MODE_KEY) || ''; } catch (e) { /* abaikan */ }
+    return m === 'frame' || m === 'direct' ? m : (IS_IOS ? 'direct' : 'frame');
+  }
+  function setMode(m) { try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* abaikan */ } }
+
+  function hideAll() { $('setup').hidden = true; $('app').hidden = true; $('launcher').hidden = true; }
+
+  // Buka otomatis sekali per sesi; kalau pengguna kembali ke aplikasi, tampilkan tombol (tanpa loop).
+  function showLauncher(url, auto) {
+    hideAll();
+    $('frame').removeAttribute('src');
+    $('launcher').hidden = false;
+    $('launcher-open').href = url;
+    $('launcher-hint').hidden = !IS_IOS;
+    var already = true;
+    try {
+      already = sessionStorage.getItem('bca_auto_opened') === '1';
+      sessionStorage.setItem('bca_auto_opened', '1');
+    } catch (e) { /* abaikan */ }
+    if (auto && !already) {
+      $('launcher-text').textContent = 'Membuka dashboard…';
+      setTimeout(function () { location.assign(url); }, 400);
+    } else {
+      $('launcher-text').textContent = 'Ketuk tombol di bawah untuk membuka dashboard.';
+    }
+  }
+
+  function start(url, auto) {
+    if (getMode() === 'direct') showLauncher(url, auto); else showApp(url);
+  }
+
   function showSetup(prefill) {
-    $('app').hidden = true;
+    hideAll();
     $('setup').hidden = false;
     $('url').value = prefill || '';
   }
 
   var loadTimer;
   function showApp(url) {
-    $('setup').hidden = true;
+    hideAll();
     $('app').hidden = false;
     $('loading').hidden = false;
     $('loading-direct').hidden = true;
@@ -149,7 +199,7 @@
     }
     $('setup-err').hidden = true;
     setUrl(v);
-    showApp(v);
+    start(v, true);
   });
 
   // Menu
@@ -162,17 +212,22 @@
     if (!$('menu').hidden && !$('menu').contains(e.target) && e.target !== $('menu-btn')) toggleMenu(false);
   });
   $('m-reload').addEventListener('click', function () { toggleMenu(false); showApp(getUrl()); });
+  $('m-mode').addEventListener('click', function () {
+    toggleMenu(false); setMode('direct'); showLauncher(getUrl(), false); location.assign(getUrl());
+  });
+  $('launcher-frame').addEventListener('click', function () { setMode('frame'); showApp(getUrl()); });
+  $('launcher-change').addEventListener('click', function () { showSetup(getUrl()); });
   $('m-change').addEventListener('click', function () { toggleMenu(false); $('frame').removeAttribute('src'); showSetup(getUrl()); });
 
   // Status online/offline
   function updateOnline() { $('offline').hidden = navigator.onLine; }
-  window.addEventListener('online', function () { updateOnline(); if (getUrl()) showApp(getUrl()); });
+  window.addEventListener('online', function () { updateOnline(); if (getUrl() && getMode() === 'frame') showApp(getUrl()); });
   window.addEventListener('offline', updateOnline);
   updateOnline();
 
   // Mulai
   var saved = getUrl();
-  if (saved && URL_RE.test(saved)) showApp(saved); else showSetup('');
+  if (saved && URL_RE.test(saved)) start(saved, true); else showSetup('');
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
