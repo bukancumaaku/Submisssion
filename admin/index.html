@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#C9643F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="BCA Admin">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>BCA Admin</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <style>
+    :root {
+      --bg: #F4EFE6; --card: #FFFBF5; --ink: #2A2733; --muted: #6B6575; --line: #E2D8C8;
+      --accent: #C9643F; --accent-soft: #F6E1D5; --red: #C9553A; --red-soft: #F7DDD5;
+      --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); }
+
+    /* Layar pembuka / pengaturan */
+    .screen { min-height: 100%; display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top)) 20px 24px; }
+    .box { width: 100%; max-width: 420px; text-align: center; }
+    .logo { width: 112px; height: 112px; border-radius: 50%; box-shadow: 0 4px 16px rgba(42, 39, 51, .18); }
+    h1 { font-size: 22px; margin: 14px 0 4px; }
+    p { margin: 6px 0; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 16px; margin-top: 18px; text-align: left; }
+    label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+    input { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+    .err { background: var(--red-soft); border: 1px solid var(--red); color: #7A2E1D; border-radius: 10px; padding: 8px 12px; font-size: 13.5px; margin-top: 10px; }
+    .btn { display: block; width: 100%; min-height: 46px; margin-top: 12px; border: 0; border-radius: 999px; font: 700 15px var(--font); cursor: pointer; text-decoration: none; text-align: center; line-height: 46px; padding: 0 16px; }
+    .btn.primary { background: var(--accent); color: #fff; }
+    .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); line-height: 44px; }
+    .spinner { width: 28px; height: 28px; margin: 18px auto 0; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Dashboard */
+    #app { position: fixed; inset: 0; padding-top: env(safe-area-inset-top); background: var(--bg); }
+    #frame { width: 100%; height: 100%; border: 0; display: block; background: var(--bg); }
+    #loading { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); }
+
+    /* Tombol menu kecil */
+    #menu-btn { position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--line); background: rgba(255, 251, 245, .92); color: var(--ink); font: 700 20px var(--font);
+      box-shadow: 0 2px 10px rgba(42, 39, 51, .18); cursor: pointer; z-index: 10; }
+    #menu { position: fixed; right: 12px; bottom: calc(64px + env(safe-area-inset-bottom)); width: 240px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 14px; padding: 6px; box-shadow: 0 6px 24px rgba(42, 39, 51, .2); z-index: 11; }
+    #menu button, #menu a { display: block; width: 100%; text-align: left; padding: 10px 12px; border: 0; background: none; border-radius: 10px;
+      font: 500 14px var(--font); color: var(--ink); text-decoration: none; cursor: pointer; }
+    #menu button:hover, #menu a:hover { background: var(--accent-soft); }
+    #offline { position: fixed; left: 12px; right: 68px; bottom: calc(12px + env(safe-area-inset-bottom)); background: var(--ink); color: #fff;
+      border-radius: 12px; padding: 10px 14px; font-size: 13.5px; z-index: 9; }
+  </style>
+</head>
+<body>
+
+  <!-- Pengaturan pertama kali: URL admin disimpan di perangkat ini saja, tidak ada di repo -->
+  <section id="setup" class="screen" hidden>
+    <div class="box">
+      <img class="logo" src="icons/adit-240.jpg" alt="Adit" width="112" height="112">
+      <h1>BCA Admin</h1>
+      <p class="muted">Dashboard kiriman cerita Bukan Cuma Aku</p>
+      <form class="card" id="setup-form" novalidate>
+        <label for="url">URL web app admin</label>
+        <input id="url" type="url" inputmode="url" autocomplete="off" spellcheck="false"
+               placeholder="https://script.google.com/macros/s/…/exec">
+        <p class="hint">Tempel URL <strong>/exec</strong> proyek BCA Admin. URL ini hanya disimpan di perangkat ini.</p>
+        <div class="err" id="setup-err" role="alert" hidden></div>
+        <button class="btn primary" type="submit">Simpan &amp; buka</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Dashboard di dalam aplikasi -->
+  <section id="app" hidden>
+    <iframe id="frame" title="Dashboard admin Bukan Cuma Aku" allow="clipboard-write"></iframe>
+    <div id="loading">
+      <div class="box">
+        <img class="logo" src="icons/adit-240.jpg" alt="" width="112" height="112">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="muted" id="loading-text">Membuka dashboard…</p>
+        <a class="btn ghost" id="loading-direct" href="#" hidden>Tidak muncul? Buka langsung</a>
+      </div>
+    </div>
+    <div id="offline" role="status" hidden>Kamu sedang offline. Dashboard butuh internet.</div>
+    <button id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu">⋯</button>
+    <div id="menu" role="menu" hidden>
+      <button type="button" role="menuitem" id="m-reload">↻ Muat ulang dashboard</button>
+      <a role="menuitem" id="m-direct" href="#">↗ Buka langsung (kalau perlu login Google)</a>
+      <button type="button" role="menuitem" id="m-change">⚙ Ganti URL admin</button>
+    </div>
+  </section>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'bca_admin_url';
+  var $ = function (id) { return document.getElementById(id); };
+  var URL_RE = /^https:\/\/script\.google\.com\/(?:a\/[^\/\s]+\/)?macros\/s\/[A-Za-z0-9_-]{20,}\/exec$/;
+
+  function getUrl() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
+  function setUrl(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* abaikan */ } }
+
+  function showSetup(prefill) {
+    $('app').hidden = true;
+    $('setup').hidden = false;
+    $('url').value = prefill || '';
+  }
+
+  var loadTimer;
+  function showApp(url) {
+    $('setup').hidden = true;
+    $('app').hidden = false;
+    $('loading').hidden = false;
+    $('loading-direct').hidden = true;
+    $('loading-direct').href = url;
+    $('m-direct').href = url;
+    clearTimeout(loadTimer);
+    // Kalau 12 detik belum tampil (mis. perlu login Google di luar aplikasi), tawarkan buka langsung.
+    loadTimer = setTimeout(function () {
+      $('loading-text').textContent = 'Masih memuat… Kalau diminta login Google, buka langsung dulu.';
+      $('loading-direct').hidden = false;
+    }, 12000);
+    $('frame').src = url;
+  }
+
+  $('frame').addEventListener('load', function () {
+    if (!$('frame').getAttribute('src')) return;
+    clearTimeout(loadTimer);
+    $('loading').hidden = true;
+  });
+
+  $('setup-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var v = $('url').value.trim();
+    if (!URL_RE.test(v)) {
+      $('setup-err').textContent = 'URL harus berbentuk https://script.google.com/macros/s/…/exec';
+      $('setup-err').hidden = false;
+      return;
+    }
+    $('setup-err').hidden = true;
+    setUrl(v);
+    showApp(v);
+  });
+
+  // Menu
+  function toggleMenu(open) {
+    $('menu').hidden = !open;
+    $('menu-btn').setAttribute('aria-expanded', String(open));
+  }
+  $('menu-btn').addEventListener('click', function () { toggleMenu($('menu').hidden); });
+  document.addEventListener('click', function (e) {
+    if (!$('menu').hidden && !$('menu').contains(e.target) && e.target !== $('menu-btn')) toggleMenu(false);
+  });
+  $('m-reload').addEventListener('click', function () { toggleMenu(false); showApp(getUrl()); });
+  $('m-change').addEventListener('click', function () { toggleMenu(false); $('frame').removeAttribute('src'); showSetup(getUrl()); });
+
+  // Status online/offline
+  function updateOnline() { $('offline').hidden = navigator.onLine; }
+  window.addEventListener('online', function () { updateOnline(); if (getUrl()) showApp(getUrl()); });
+  window.addEventListener('offline', updateOnline);
+  updateOnline();
+
+  // Mulai
+  var saved = getUrl();
+  if (saved && URL_RE.test(saved)) showApp(saved); else showSetup('');
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#C9643F">
+  <meta name="description" content="Kirim ceritamu soal gaji, keluarga, dan bertahan untuk serial animasi Sisa Saldo.">
+  <title>Bukan Cuma Aku — Kirim Ceritamu</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --bg: #F4EFE6;
+    --card: #FFFBF5;
+    --ink: #2A2733;
+    --muted: #6B6575;
+    --line: #E2D8C8;
+    --accent: #C9643F;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #F6E1D5;
+    --green: #5E8C61;
+    --green-soft: #E2EDE1;
+    --red: #C9553A;
+    --red-soft: #F7DDD5;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-head: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  /* ---------- Header ---------- */
+  .hero { padding: 4px 2px 16px; }
+  .eyebrow {
+    margin: 0 0 6px; font-size: 11px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1, h2, h3 { font-family: var(--font-head); line-height: 1.3; margin: 0; }
+  h1 { font-size: 22px; font-weight: 800; }
+  h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  h3 { font-size: 14px; font-weight: 700; margin: 16px 0 4px; }
+  .sub { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+  .tabs { display: flex; gap: 4px; margin: 16px 0 0; padding: 4px; background: #EAE2D4; border-radius: 999px; }
+  .tab {
+    flex: 1; min-width: 0; border: 0; background: transparent; color: var(--muted); font: 600 13px var(--font-body);
+    padding: 8px 10px; border-radius: 999px; cursor: pointer; min-height: 36px;
+  }
+  .tab.is-active { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(42, 39, 51, .12); }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .steps { list-style: none; display: flex; gap: 6px; padding: 0; margin: 12px 0 0; }
+  .steps li {
+    flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 600;
+    color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 6px; white-space: nowrap; overflow: hidden;
+  }
+  .steps li span {
+    display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--line); color: var(--ink); font-size: 11px;
+  }
+  .steps li.is-active { border-color: var(--accent); color: var(--ink); }
+  .steps li.is-active span { background: var(--accent); color: #fff; }
+  .steps li.is-done span { background: var(--green); color: #fff; }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 16px;
+  }
+  .muted { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
+  .small { font-size: 13px; }
+  .center { text-align: center; }
+
+  /* ---------- S&K ---------- */
+  .terms {
+    max-height: 46vh; overflow-y: auto; padding: 2px 14px 12px; margin-bottom: 14px;
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm);
+    font-size: 13.5px; line-height: 1.6;
+  }
+  .terms:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .terms ul { padding-left: 18px; margin: 4px 0; }
+  .terms li { margin: 2px 0; }
+  .terms p { margin: 4px 0; }
+  code { background: var(--accent-soft); padding: 1px 5px; border-radius: 5px; font-size: .9em; }
+
+  .checks { border: 0; padding: 0; margin: 0 0 14px; }
+  .checks legend { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+  .check {
+    display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; margin-bottom: 6px;
+    border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff;
+    cursor: pointer; font-size: 13.5px; font-weight: 400; line-height: 1.45;
+  }
+  .check:has(input:checked) { border-color: var(--green); background: var(--green-soft); }
+  .check input { width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0; accent-color: var(--green); }
+
+  /* ---------- Form ---------- */
+  .field { margin: 0 0 14px; border: 0; padding: 0; }
+  label, legend { display: block; font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+  .req { color: var(--red); }
+  .opt { color: var(--muted); font-weight: 400; }
+  /* 16px di HP supaya iOS tidak auto-zoom saat input difokuskan */
+  input[type=text], input[type=email], select, textarea {
+    width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: #fff;
+    border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 10px 12px; min-height: 44px;
+  }
+  textarea { resize: vertical; min-height: 220px; line-height: 1.6; }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .is-invalid { border-color: var(--red) !important; }
+  .hint { margin: 4px 0 0; font-size: 12.5px; color: var(--muted); }
+  .counter-row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .counter { margin: 4px 0 0; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+  .counter.ok { color: var(--green); }
+  .counter.bad { color: var(--red); font-weight: 600; }
+
+  .seg { display: flex; gap: 6px; }
+  .seg-opt {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 42px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+    background: #fff; font-weight: 600; font-size: 14px; cursor: pointer; margin: 0;
+  }
+  .seg-opt:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .seg-opt input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+  .hp { position: absolute !important; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block; width: 100%; min-height: 46px; border-radius: 999px; border: 0;
+    font-family: var(--font-head); font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 10px 18px; margin-top: 8px; transition: transform .05s ease, opacity .15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); }
+  .btn.secondary { background: var(--green); color: #fff; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn.inline { width: auto; margin-top: 0; padding: 10px 22px; min-height: 44px; flex: 0 0 auto; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ---------- Alerts ---------- */
+  .alert { border-radius: var(--radius-sm); padding: 10px 14px; margin: 0 0 12px; font-size: 14px; }
+  .alert p { margin: 3px 0; }
+  .alert.error { background: var(--red-soft); color: #7A2E1D; border: 1px solid var(--red); }
+  .alert.crisis { background: var(--red-soft); border: 1.5px solid var(--red); color: var(--ink); margin-bottom: 16px; }
+  .crisis-title { font-family: var(--font-head); font-weight: 800; font-size: 16px; color: var(--red); }
+
+  .support-small {
+    margin: 16px 0 0; padding-top: 12px; border-top: 1px dashed var(--line);
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+  }
+
+  /* ---------- Thanks ---------- */
+  .code-box {
+    text-align: center; background: var(--accent-soft); border-radius: var(--radius);
+    padding: 16px 14px; margin: 16px 0 8px;
+  }
+  .code-label { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .code {
+    margin: 2px 0 4px; font-family: var(--font-head); font-size: 26px; font-weight: 800;
+    letter-spacing: .08em; color: var(--ink); user-select: all;
+  }
+  .foot { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; }
+
+  /* ---------- Cek status ---------- */
+  .code-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .code-row input { min-width: 0; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .status-result {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 14px; margin-bottom: 12px;
+  }
+  .status-code { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--muted); }
+  .status-label { margin: 2px 0 10px; font: 800 18px var(--font-head); color: var(--accent); }
+  .status-result.is-muted .status-label { color: var(--muted); }
+  .status-desc { margin: 10px 0 0; font-size: 14px; }
+  .progress { list-style: none; display: flex; gap: 4px; padding: 0; margin: 0; counter-reset: s; }
+  .progress li {
+    flex: 1; text-align: center; font-size: 10.5px; color: var(--muted); padding-top: 10px;
+    border-top: 4px solid var(--line); border-radius: 2px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .progress li.is-done { border-top-color: var(--green); color: var(--ink); }
+  .progress li.is-active { border-top-color: var(--accent); color: var(--ink); font-weight: 700; }
+
+  @media (min-width: 640px) {
+    .wrap { padding-top: 32px; }
+    h1 { font-size: 26px; }
+    .card { padding: 24px; }
+    input[type=text], input[type=email], select, textarea { font-size: 15px; }
+    .progress li { font-size: 11.5px; }
+  }
+  .logo { display: block; width: 88px; height: 88px; border-radius: 50%; margin: 0 0 12px; box-shadow: 0 2px 10px rgba(42, 39, 51, .15); }
+  a.btn { text-align: center; text-decoration: none; line-height: 26px; }
+  @media (min-width: 640px) { .logo { width: 104px; height: 104px; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <img class="logo" src="logo.jpg" alt="Adit, maskot Bukan Cuma Aku" width="88" height="88">
+    <p class="eyebrow">Sisa Saldo · Bukan Cuma Aku</p>
+    <h1>Bukan Cuma Aku — Kirim Ceritamu</h1>
+    <p class="sub">Cerita tentang gaji, keluarga, dan bertahan. Siapa tahu, ceritamu nemenin orang lain.</p>
+    <nav class="tabs" aria-label="Menu">
+      <button type="button" class="tab is-active" id="tab-send" aria-pressed="true">Kirim cerita</button>
+      <button type="button" class="tab" id="tab-status" aria-pressed="false">Cek status cerita</button>
+    </nav>
+    <ol class="steps" id="steps" aria-label="Langkah">
+      <li id="dot-1" class="is-active"><span>1</span> Ketentuan</li>
+      <li id="dot-2"><span>2</span> Cerita</li>
+      <li id="dot-3"><span>3</span> Selesai</li>
+    </ol>
+  </header>
+
+  <!-- ================= CEK STATUS ================= -->
+  <section id="step-status" class="card" aria-labelledby="status-title" hidden>
+    <h2 id="status-title">Cek status ceritamu</h2>
+    <p class="muted">Masukkan kode yang kamu dapat setelah mengirim cerita. Kami cuma menampilkan statusnya, bukan isi ceritamu.</p>
+    <form id="status-form" novalidate autocomplete="off">
+      <label for="status-code">Kode kiriman</label>
+      <div class="code-row">
+        <input id="status-code" type="text" maxlength="12" placeholder="BCA-7F3K"
+               autocapitalize="characters" spellcheck="false" inputmode="text">
+        <button type="submit" class="btn primary inline" id="btn-status">Cek</button>
+      </div>
+    </form>
+    <div id="status-error" class="alert error" role="alert" hidden></div>
+    <div id="status-result" class="status-result" aria-live="polite" hidden>
+      <p class="status-code" id="status-res-code"></p>
+      <p class="status-label" id="status-res-label"></p>
+      <ol class="progress" id="status-progress" aria-label="Tahapan">
+        <li>Diterima</li><li>Dibaca</li><li>Ditimbang</li><li>Produksi</li><li>Tayang</li>
+      </ol>
+      <p class="status-desc" id="status-res-desc"></p>
+      <a class="btn primary" id="status-res-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Tonton kontennya ↗</a>
+    </div>
+    <p class="hint">Mau ceritamu dihapus? Hubungi <span class="js-contact">DM akun Bukan Cuma Aku (Instagram/TikTok)</span> dan sebutkan kodenya.</p>
+  </section>
+
+  <!-- ================= LANGKAH 1: SYARAT & KETENTUAN ================= -->
+  <section id="step-terms" class="card" aria-labelledby="terms-title">
+    <h2 id="terms-title">Sebelum mulai, baca ini dulu ya</h2>
+
+    <div class="terms" tabindex="0" aria-label="Syarat dan ketentuan, bisa digulir">
+      <h3>Halaman ini buat apa?</h3>
+      <p>Di sini kamu bisa mengirim pengalaman nyata soal uang, kerja, keluarga, dan cara bertahan. Admin akun <strong>Bukan Cuma Aku</strong> membaca kiriman dan memilih sebagian untuk diadaptasi jadi konten serial animasi <strong>Sisa Saldo</strong> atau konten teks.</p>
+
+      <h3>Data apa yang kami simpan?</h3>
+      <ul>
+        <li>Nama samaran yang kamu tulis (bukan nama asli).</li>
+        <li>Kategori, judul singkat (kalau diisi), dan isi cerita.</li>
+        <li>Pilihan boleh dihubungi atau tidak, dan email — <em>hanya kalau kamu mengisinya</em>.</li>
+        <li>Waktu kirim dan kode kiriman (contoh: <code>BCA-7F3K</code>).</li>
+      </ul>
+      <p>Kami <strong>tidak</strong> meminta nama asli, nomor HP, atau alamat, dan database kami tidak menyimpan alamat IP atau info perangkatmu. Halaman ini tanpa login.</p>
+
+      <h3>Untuk apa datanya?</h3>
+      <ul>
+        <li>Dibaca dan dipertimbangkan oleh admin untuk dibuat jadi konten.</li>
+        <li>Email (kalau ada) hanya dipakai untuk menghubungimu soal cerita ini. Tidak dibagikan, tidak dijual, dan tidak dipakai untuk promosi.</li>
+        <li>Hanya admin yang bisa melihat kiriman. Cerita tidak pernah ditampilkan apa adanya ke publik; kalau dibuat jadi konten, detailnya diubah dan disamarkan.</li>
+      </ul>
+
+      <h3>Berapa lama disimpan?</h3>
+      <ul>
+        <li>Cerita yang <strong>ditolak</strong> dihapus otomatis <strong>12 bulan</strong> setelah dikirim.</li>
+        <li>Cerita lain disimpan selama masih dipertimbangkan atau dipakai untuk konten, sampai kamu minta dihapus.</li>
+      </ul>
+
+      <h3>Cara minta ceritamu dihapus</h3>
+      <p>Hubungi kami lewat <strong><span class="js-contact">DM akun Bukan Cuma Aku (Instagram/TikTok)</span></strong> dan sebutkan <strong>kode kiriman</strong> yang muncul setelah kamu mengirim cerita. Tanpa kode, kami tidak bisa tahu cerita mana yang milikmu. Kami menghapusnya dari database paling lambat 14 hari. Kalau ceritamu sudah terlanjur tayang sebagai konten, kami akan berusaha menurunkan atau menyuntingnya sebisa mungkin.</p>
+
+      <h3>Yang perlu kamu tahu</h3>
+      <ul>
+        <li>Admin bebas memilih, mengubah, menyingkat, atau menyamarkan cerita. Tidak semua cerita akan dibuat, dan admin bisa menolak tanpa memberi alasan.</li>
+        <li>Admin mungkin tidak bisa membalas kiriman satu per satu.</li>
+        <li>Admin bukan konselor atau tenaga profesional. Kalau kamu sedang dalam bahaya atau kepikiran menyakiti diri, jangan tunggu balasan kami — hubungi layanan kesehatan jiwa <strong>119 ext 8</strong>, <strong>SAPA 129</strong> jika kamu mengalami kekerasan, atau <strong>112</strong> untuk keadaan darurat.</li>
+      </ul>
+    </div>
+
+    <fieldset class="checks">
+      <legend>Centang semua poin ini untuk lanjut:</legend>
+      <label class="check"><input type="checkbox" class="req-check"> <span>Saya berusia 18 tahun ke atas.</span></label>
+      <label class="check"><input type="checkbox" class="req-check"> <span>Cerita ini pengalaman saya sendiri, dan saya berhak membagikannya.</span></label>
+      <label class="check"><input type="checkbox" class="req-check"> <span>Saya mengizinkan admin mengadaptasi cerita ini jadi konten (animasi/teks), termasuk mengubah, menyingkat, atau menyamarkan detailnya.</span></label>
+      <label class="check"><input type="checkbox" class="req-check"> <span>Saya paham admin berhak menolak cerita tanpa memberi alasan, dan tidak semua cerita akan dibuat.</span></label>
+      <label class="check"><input type="checkbox" class="req-check"> <span>Saya tidak menyertakan nama asli, alamat, sekolah, kantor, atau detail yang bisa mengenali orang lain.</span></label>
+    </fieldset>
+
+    <button type="button" id="btn-next" class="btn primary" disabled>Lanjut</button>
+    <p class="hint center" id="next-hint">Centang kelima poin di atas untuk lanjut.</p>
+  </section>
+
+  <!-- ================= LANGKAH 2: FORMULIR ================= -->
+  <section id="step-form" class="card" aria-labelledby="form-title" hidden>
+    <h2 id="form-title">Ceritakan pelan-pelan</h2>
+    <p class="muted">Pakai nama samaran, dan samarkan nama orang, tempat, sekolah, atau kantor.</p>
+
+    <form id="story-form" novalidate autocomplete="off">
+      <div class="field">
+        <label for="alias">Nama samaran <span class="req">*</span></label>
+        <input id="alias" name="alias" type="text" maxlength="40" required
+               placeholder="Misal: Anak Tengah, Si Kasir, R." autocomplete="off">
+        <p class="hint">Bukan nama asli ya. Maks 40 karakter.</p>
+      </div>
+
+      <div class="field">
+        <label for="category">Kategori <span class="req">*</span></label>
+        <select id="category" name="category" required>
+          <option value="">Pilih kategori…</option>
+          <option value="Gaji &amp; uang">Gaji &amp; uang</option>
+          <option value="Keluarga">Keluarga</option>
+          <option value="Pekerjaan">Pekerjaan</option>
+          <option value="Generasi sandwich">Generasi sandwich</option>
+          <option value="Bertahan hidup">Bertahan hidup</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="title">Judul singkat <span class="opt">(opsional)</span></label>
+        <input id="title" name="title" type="text" maxlength="80"
+               placeholder="Misal: Gaji pertama habis di tanggal 5">
+      </div>
+
+      <div class="field">
+        <label for="story">Ceritamu <span class="req">*</span></label>
+        <textarea id="story" name="story" rows="12" maxlength="8000" required
+                  placeholder="Ceritakan apa yang terjadi, apa yang kamu rasakan, dan gimana kamu bertahan…"></textarea>
+        <div class="counter-row">
+          <p class="hint" id="story-hint">Minimal 200 karakter.</p>
+          <p class="counter" id="story-counter" aria-live="polite">0 / 8000</p>
+        </div>
+      </div>
+
+      <fieldset class="field">
+        <legend>Boleh dihubungi admin? <span class="req">*</span></legend>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="contact" value="tidak" checked> <span>Tidak</span></label>
+          <label class="seg-opt"><input type="radio" name="contact" value="ya"> <span>Ya, boleh</span></label>
+        </div>
+      </fieldset>
+
+      <div class="field" id="email-field" hidden>
+        <label for="email">Email <span class="opt">(opsional)</span></label>
+        <input id="email" name="email" type="email" inputmode="email" maxlength="120"
+               placeholder="nama@contoh.com" autocomplete="email">
+        <p class="hint">Hanya dipakai untuk menghubungimu soal cerita ini. Kami tidak meminta nomor HP.</p>
+      </div>
+
+      <!-- Honeypot anti-bot: jangan diisi. Disembunyikan dari pengguna & pembaca layar. -->
+      <div class="hp" aria-hidden="true">
+        <label for="website">Website</label>
+        <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <input type="hidden" id="token" value="">
+      <input type="hidden" id="min-fill" value="20">
+      <input type="hidden" id="story-min" value="200">
+      <input type="hidden" id="story-max" value="8000">
+
+      <div id="form-error" class="alert error" role="alert" hidden></div>
+
+      <button type="submit" class="btn primary" id="btn-submit">Kirim cerita</button>
+      <button type="button" class="btn ghost" id="btn-back">Kembali ke ketentuan</button>
+    </form>
+
+    <p class="support-small">
+      Kamu nggak sendirian. Jangan tunggu balasan admin — hubungi layanan kesehatan jiwa
+      <strong>119 ext 8</strong>, atau <strong>SAPA 129</strong> jika kamu mengalami kekerasan.
+    </p>
+  </section>
+
+  <!-- ================= LANGKAH 3: TERIMA KASIH ================= -->
+  <section id="step-thanks" class="card" aria-labelledby="thanks-title" hidden>
+    <div id="crisis-box" class="alert crisis" role="alert" hidden>
+      <p class="crisis-title">Kamu nggak sendirian.</p>
+      <p>Jangan tunggu balasan admin — hubungi layanan kesehatan jiwa <strong>119 ext 8</strong>, atau <strong>SAPA 129</strong> jika kamu mengalami kekerasan.</p>
+      <p class="small">Dalam keadaan darurat, hubungi <strong>112</strong>.</p>
+    </div>
+
+    <h2 id="thanks-title">Makasih udah mau cerita 🧡</h2>
+    <p>Ceritamu sudah kami terima dan akan dibaca admin. Nggak semua cerita bisa dibuat jadi konten, dan kami mungkin nggak bisa membalas satu per satu — tapi setiap cerita kami baca.</p>
+
+    <div class="code-box">
+      <p class="code-label">Kode kirimanmu</p>
+      <p class="code" id="sub-code">BCA-XXXX</p>
+      <button type="button" class="btn secondary" id="btn-copy">Salin kode</button>
+    </div>
+    <p class="hint center">Simpan kode ini (screenshot juga boleh). Pakai kode ini untuk <strong>cek status ceritamu</strong> nanti, atau kalau mau minta ceritamu dihapus lewat <span class="js-contact">DM akun Bukan Cuma Aku (Instagram/TikTok)</span>.</p>
+    <button type="button" class="btn ghost" id="btn-to-status">Cek status cerita</button>
+  </section>
+
+  <footer class="foot">
+    <p>Bukan Cuma Aku · Sisa Saldo</p>
+  </footer>
+</main>
+
+<script>
+/* Pengganti google.script.run untuk GitHub Pages: memanggil doPost() proyek PUBLIK. */
+(function () {
+  'use strict';
+  var API = "https://script.google.com/macros/s/AKfycbxC9oCj8_w8l3ehdcW23glTe43QZ-PId47dZDguNccwzDxsApjJ-FBDQe49bymJugYqxw/exec";
+  function call(action, payload) {
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // tanpa preflight CORS
+      body: JSON.stringify({ action: action, payload: payload }),
+      credentials: 'omit',
+      cache: 'no-store'
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
+  function runner() {
+    var ok = function () {}, fail = function () {};
+    var r = {
+      withSuccessHandler: function (f) { ok = f; return r; },
+      withFailureHandler: function (f) { fail = f; return r; },
+      submitStory: function (p) { call('submit', p).then(ok, fail); },
+      checkStatus: function (c) { call('status', c).then(ok, fail); }
+    };
+    return r;
+  }
+  window.google = { script: {} };
+  Object.defineProperty(window.google.script, 'run', { get: runner });
+
+  // Token halaman (bukti kapan halaman dibuka) + info kontak terbaru.
+  function loadConfig(attempt) {
+    call('config').then(function (res) {
+      if (!res || !res.ok) throw new Error('config');
+      document.getElementById('token').value = res.token;
+      if (res.contactInfo) {
+        Array.prototype.forEach.call(document.querySelectorAll('.js-contact'), function (el) {
+          el.textContent = res.contactInfo;
+        });
+      }
+    }).catch(function () {
+      if (attempt < 3) setTimeout(function () { loadConfig(attempt + 1); }, 3000 * (attempt + 1));
+    });
+  }
+  loadConfig(0);
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var RATE_KEY = 'bca_last_submit';
+  var RATE_MS = 2 * 60 * 1000; // 1 kiriman per 2 menit per browser
+  var openedAt = Date.now();
+
+  var $ = function (id) { return document.getElementById(id); };
+  var minFill = Number($('min-fill').value) || 20;
+  var storyMin = Number($('story-min').value) || 200;
+  var storyMax = Number($('story-max').value) || 8000;
+  var nf = new Intl.NumberFormat('id-ID');
+
+  // ---------- Navigasi langkah ----------
+  var currentStep = 1;
+  function showStep(n) {
+    currentStep = n;
+    setView('send');
+    $('step-terms').hidden = n !== 1;
+    $('step-form').hidden = n !== 2;
+    $('step-thanks').hidden = n !== 3;
+    [1, 2, 3].forEach(function (i) {
+      var dot = $('dot-' + i);
+      dot.classList.toggle('is-active', i === n);
+      dot.classList.toggle('is-done', i < n);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ---------- Tab: Kirim cerita / Cek status ----------
+  function setView(view) {
+    var isStatus = view === 'status';
+    $('step-status').hidden = !isStatus;
+    $('steps').hidden = isStatus;
+    $('step-terms').hidden = isStatus || currentStep !== 1;
+    $('step-form').hidden = isStatus || currentStep !== 2;
+    $('step-thanks').hidden = isStatus || currentStep !== 3;
+    $('tab-send').classList.toggle('is-active', !isStatus);
+    $('tab-status').classList.toggle('is-active', isStatus);
+    $('tab-send').setAttribute('aria-pressed', String(!isStatus));
+    $('tab-status').setAttribute('aria-pressed', String(isStatus));
+  }
+  $('tab-send').addEventListener('click', function () { setView('send'); });
+  $('tab-status').addEventListener('click', function () {
+    setView('status');
+    setTimeout(function () { $('status-code').focus(); }, 100);
+  });
+
+  // ---------- Cek status ----------
+  var LAST_CODE_KEY = 'bca_last_code';
+  try { $('status-code').value = localStorage.getItem(LAST_CODE_KEY) || ''; } catch (e) { /* abaikan */ }
+
+  var checking = false;
+  $('status-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (checking) return;
+    var code = $('status-code').value.trim();
+    $('status-error').hidden = true;
+    $('status-result').hidden = true;
+    if (!code) {
+      $('status-error').textContent = 'Masukkan kode kirimanmu dulu ya.';
+      $('status-error').hidden = false;
+      return;
+    }
+    checking = true;
+    var btn = $('btn-status');
+    btn.disabled = true; btn.textContent = 'Mengecek…';
+    function done() { checking = false; btn.disabled = false; btn.textContent = 'Cek'; }
+    google.script.run
+      .withSuccessHandler(function (res) {
+        done();
+        if (!res || !res.ok) {
+          $('status-error').textContent = (res && res.message) || 'Status belum bisa dicek. Coba lagi ya.';
+          $('status-error').hidden = false;
+          return;
+        }
+        $('status-res-code').textContent = res.code;
+        $('status-res-label').textContent = res.label;
+        $('status-res-desc').textContent = res.desc;
+        var prog = $('status-progress');
+        prog.hidden = !res.step;
+        Array.prototype.forEach.call(prog.children, function (li, i) {
+          li.classList.toggle('is-done', i + 1 < res.step);
+          li.classList.toggle('is-active', i + 1 === res.step);
+        });
+        var link = $('status-res-link');
+        var safe = typeof res.url === 'string' && /^https:\/\/[^\s<>"'`]+$/i.test(res.url);
+        link.hidden = !safe;
+        link.href = safe ? res.url : '#';
+        $('status-result').classList.toggle('is-muted', !res.step);
+        $('status-result').hidden = false;
+      })
+      .withFailureHandler(function () {
+        done();
+        $('status-error').textContent = 'Koneksi terputus. Coba lagi ya.';
+        $('status-error').hidden = false;
+      })
+      .checkStatus(code);
+  });
+
+  // ---------- Langkah 1: centang wajib ----------
+  var checks = Array.prototype.slice.call(document.querySelectorAll('.req-check'));
+  function updateNext() {
+    var done = checks.filter(function (c) { return c.checked; }).length;
+    $('btn-next').disabled = done !== checks.length;
+    $('next-hint').textContent = done === checks.length
+      ? 'Siap! Tekan Lanjut.'
+      : 'Centang ' + (checks.length - done) + ' poin lagi untuk lanjut.';
+  }
+  checks.forEach(function (c) { c.addEventListener('change', updateNext); });
+  updateNext();
+
+  $('btn-next').addEventListener('click', function () {
+    if (checks.every(function (c) { return c.checked; })) {
+      showStep(2);
+      setTimeout(function () { $('alias').focus(); }, 300);
+    }
+  });
+  $('btn-back').addEventListener('click', function () { showStep(1); });
+
+  // ---------- Langkah 2: formulir ----------
+  function updateCounter() {
+    var len = $('story').value.trim().length;
+    var c = $('story-counter');
+    c.textContent = nf.format(len) + ' / ' + nf.format(storyMax);
+    c.classList.toggle('ok', len >= storyMin && len <= storyMax);
+    c.classList.toggle('bad', len > storyMax);
+    $('story-hint').textContent = len < storyMin
+      ? 'Minimal ' + storyMin + ' karakter (kurang ' + (storyMin - len) + ' lagi).'
+      : 'Panjangnya sudah cukup.';
+  }
+  $('story').addEventListener('input', updateCounter);
+  updateCounter();
+
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=contact]'), function (r) {
+    r.addEventListener('change', function () {
+      var yes = contactValue() === 'ya';
+      $('email-field').hidden = !yes;
+      if (!yes) $('email').value = '';
+    });
+  });
+  function contactValue() {
+    var el = document.querySelector('input[name=contact]:checked');
+    return el ? el.value : 'tidak';
+  }
+
+  function showError(msg, fieldId) {
+    var box = $('form-error');
+    box.textContent = msg;
+    box.hidden = false;
+    document.querySelectorAll('.is-invalid').forEach(function (e) { e.classList.remove('is-invalid'); });
+    if (fieldId) {
+      $(fieldId).classList.add('is-invalid');
+      $(fieldId).focus();
+    } else {
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+  function clearError() {
+    $('form-error').hidden = true;
+    document.querySelectorAll('.is-invalid').forEach(function (e) { e.classList.remove('is-invalid'); });
+  }
+
+  function readLastSubmit() {
+    try { return Number(localStorage.getItem(RATE_KEY)) || 0; } catch (e) { return 0; }
+  }
+  function writeLastSubmit() {
+    try { localStorage.setItem(RATE_KEY, String(Date.now())); } catch (e) { /* abaikan */ }
+  }
+
+  function validateClient(d) {
+    if (!d.alias) return ['Nama samaran wajib diisi.', 'alias'];
+    if (d.alias.length > 40) return ['Nama samaran maksimal 40 karakter.', 'alias'];
+    if (!d.category) return ['Pilih salah satu kategori dulu ya.', 'category'];
+    if (d.title.length > 80) return ['Judul maksimal 80 karakter.', 'title'];
+    if (d.story.length < storyMin) return ['Ceritanya minimal ' + storyMin + ' karakter ya (sekarang ' + d.story.length + ').', 'story'];
+    if (d.story.length > storyMax) return ['Ceritanya maksimal ' + nf.format(storyMax) + ' karakter.', 'story'];
+    if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) return ['Format email sepertinya belum benar. Boleh dikosongkan.', 'email'];
+    return null;
+  }
+
+  var sending = false;
+  $('story-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (sending) return;
+    clearError();
+
+    var d = {
+      alias: $('alias').value.trim(),
+      category: $('category').value,
+      title: $('title').value.trim(),
+      story: $('story').value.trim(),
+      contactOk: contactValue() === 'ya',
+      email: contactValue() === 'ya' ? $('email').value.trim() : '',
+      website: $('website').value,
+      token: $('token').value
+    };
+
+    var err = validateClient(d);
+    if (err) return showError(err[0], err[1]);
+
+    var since = Date.now() - readLastSubmit();
+    if (since < RATE_MS) {
+      var wait = Math.ceil((RATE_MS - since) / 1000);
+      return showError('Kamu baru saja mengirim cerita. Tunggu ' + wait + ' detik lagi ya sebelum mengirim yang baru.');
+    }
+    var elapsed = (Date.now() - openedAt) / 1000;
+    if (elapsed < minFill) {
+      return showError('Pelan-pelan dulu ya. Baca lagi ceritamu sebentar, lalu kirim dalam ' + Math.ceil(minFill - elapsed) + ' detik.');
+    }
+
+    sending = true;
+    var btn = $('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Mengirim…';
+
+    google.script.run
+      .withSuccessHandler(function (res) {
+        sending = false;
+        btn.disabled = false;
+        btn.textContent = 'Kirim cerita';
+        if (!res || !res.ok) {
+          return showError((res && res.message) || 'Kiriman gagal. Coba lagi ya.');
+        }
+        writeLastSubmit();
+        try { localStorage.setItem(LAST_CODE_KEY, res.code); } catch (e) { /* abaikan */ }
+        $('status-code').value = res.code;
+        $('sub-code').textContent = res.code;
+        $('crisis-box').hidden = !res.crisis;
+        $('story-form').reset();
+        updateCounter();
+        showStep(3);
+      })
+      .withFailureHandler(function () {
+        sending = false;
+        btn.disabled = false;
+        btn.textContent = 'Kirim cerita';
+        showError('Koneksi terputus atau server sedang gangguan. Ceritamu belum terkirim — jangan tutup halaman ini, coba tekan Kirim lagi.');
+      })
+      .submitStory(d);
+  });
+
+  // ---------- Langkah 3: salin kode ----------
+  $('btn-copy').addEventListener('click', function () {
+    var code = $('sub-code').textContent;
+    var btn = this;
+    function done() { btn.textContent = 'Tersalin ✓'; setTimeout(function () { btn.textContent = 'Salin kode'; }, 2000); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = code; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = 'Salin manual: ' + code; }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done, fallback);
+    } else { fallback(); }
+  });
+
+  $('btn-to-status').addEventListener('click', function () {
+    setView('status');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Peringatan sebelum menutup kalau cerita sudah ditulis tapi belum terkirim.
+  window.addEventListener('beforeunload', function (e) {
+    if (!$('step-form').hidden && $('story').value.trim().length > 50) {
+      e.preventDefault(); e.returnValue = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,10 @@
-# BCA Admin (PWA)
+# Bukan Cuma Aku — GitHub Pages
 
-Aplikasi pembungkus untuk dashboard admin **Bukan Cuma Aku**. Halaman ini hanya berisi ikon, manifest, dan service worker. Data kiriman tidak ada di sini: dashboard tetap dimuat langsung dari Google Apps Script dan hanya bisa dibuka oleh pemilik akun.
+| Halaman | URL | Isi |
+|---|---|---|
+| Kirim cerita (publik) | `/submission/` | Halaman statis. Kiriman & cek status dikirim ke Apps Script proyek PUBLIK lewat `doPost`. |
+| Dashboard admin (PWA) | `/admin/` | Aplikasi pembungkus (manifest, service worker, ikon). Dashboard dimuat dari Apps Script proyek ADMIN di dalam iframe dan hanya bisa dibuka pemilik akun. |
 
-URL admin **tidak** disimpan di repo ini. URL dimasukkan sekali saat aplikasi pertama dibuka, lalu disimpan di perangkat itu saja.
+Tidak ada data kiriman di repo ini. URL admin juga tidak disimpan di repo: dimasukkan sekali di aplikasi dan disimpan di perangkat itu saja.
+
+`submission/index.html` dibuat otomatis dari kode proyek publik dengan `node tools/build-submission.js <URL /exec publik>` — jangan diedit langsung.
