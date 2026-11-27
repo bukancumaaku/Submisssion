@@ -1,7 +1,7 @@
 // Service worker BCA Admin: menyimpan "cangkang" aplikasi supaya bisa dibuka
 // cepat dan tetap menampilkan pesan saat offline. Data kiriman TIDAK pernah
 // disimpan di sini — dashboard tetap dimuat langsung dari Google.
-const CACHE = 'bca-admin-v6';
+const CACHE = 'bca-admin-v7';
 const SHELL = [
   './',
   './index.html',

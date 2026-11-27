@@ -156,6 +156,21 @@
   .opt { color: var(--muted); font-weight: 400; }
   .hint.warn { color: #8A3E1F; font-weight: 600; }
   @media (min-width: 720px) { .logo { width: 88px; height: 88px; } .brand h1 { font-size: 24px; } }
+
+  /* ---------- Halaman link ---------- */
+  .top-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  #view-links h1 { margin-bottom: 4px; }
+  #view-links .hint a { color: var(--accent); }
+  #lk-add { margin: 12px 0 8px; }
+  .lk-h { font-size: 15px; margin: 18px 0 8px; }
+  .lk-item { cursor: default; }
+  .lk-item.is-off { opacity: .6; }
+  .lk-url { overflow-wrap: anywhere; }
+  .lk-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .lk-actions .btn.small { min-height: 32px; padding: 4px 12px; }
+  #modal-link .modal-card { max-height: calc(100vh - 32px); overflow-y: auto; }
+  #modal-link label:not(.toggle) { margin: 10px 0 4px; }
+  .lk-active { margin-top: 12px; display: inline-flex; }
 </style>
 <style>
   .login { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center;
@@ -185,7 +200,10 @@
           <h1>Kiriman cerita</h1>
         </div>
       </div>
-      <button type="button" class="btn small ghost" id="btn-refresh" aria-label="Muat ulang">↻ Muat ulang</button>
+      <div class="top-actions">
+        <button type="button" class="btn small ghost" id="btn-links">🔗 Halaman link</button>
+        <button type="button" class="btn small ghost" id="btn-refresh" aria-label="Muat ulang">↻ Muat ulang</button>
+      </div>
     </header>
 
     <button type="button" id="crisis-banner" class="crisis-banner" hidden></button>
@@ -293,6 +311,47 @@
     </aside>
   </section>
 
+  <!-- ================= HALAMAN LINK ADIT ================= -->
+  <section id="view-links" hidden>
+    <button type="button" class="btn small ghost back" id="lk-back">← Kembali ke daftar</button>
+    <p class="eyebrow">Halaman link Adit</p>
+    <h1>Atur halaman link</h1>
+    <p class="hint">Perubahan tampil di <a href="https://bukancumaaku.github.io/Submisssion/" target="_blank" rel="noopener">halaman link</a> paling lambat 1 menit. Link yang disembunyikan tidak tampil.</p>
+    <button type="button" class="btn primary" id="lk-add">+ Tambah link</button>
+    <p class="result-info" id="lk-info">Memuat…</p>
+    <div id="lk-groups"></div>
+  </section>
+
+  <!-- ================= MODAL LINK ================= -->
+  <div class="modal" id="modal-link" hidden role="dialog" aria-modal="true" aria-labelledby="lk-title">
+    <form class="modal-card" id="lk-form" novalidate>
+      <h2 id="lk-title">Tambah link</h2>
+      <label for="lk-section">Bagian</label>
+      <select id="lk-section">
+        <option value="utama">Tombol utama</option>
+        <option value="bisnis">Business inquiries</option>
+        <option value="produk">Produk affiliate</option>
+      </select>
+      <label for="lk-name">Judul</label>
+      <input type="text" id="lk-name" maxlength="80" placeholder="Mis. Email kerja sama" autocomplete="off">
+      <label for="lk-sub">Keterangan <span class="opt">(opsional)</span></label>
+      <input type="text" id="lk-sub" maxlength="140" placeholder="Mis. Brand deal, sponsor, kolaborasi" autocomplete="off">
+      <label for="lk-url">Link</label>
+      <input type="text" id="lk-url" maxlength="600" inputmode="url" spellcheck="false" autocomplete="off"
+             placeholder="https://… · mailto:email@contoh.com · tel:+62…">
+      <p class="hint" id="lk-url-hint">WhatsApp: https://wa.me/62812xxxx · Email: mailto:halo@contoh.com</p>
+      <div id="lk-product-fields">
+        <label for="lk-img">Link gambar produk <span class="opt">(opsional, https://)</span></label>
+        <input type="text" id="lk-img" maxlength="600" inputmode="url" spellcheck="false" autocomplete="off" placeholder="https://…/gambar.jpg">
+        <label for="lk-price">Harga <span class="opt">(opsional)</span></label>
+        <input type="text" id="lk-price" maxlength="40" placeholder="Mis. Rp49.000" autocomplete="off">
+      </div>
+      <label class="toggle lk-active"><input type="checkbox" id="lk-active" checked> <span>Tampilkan di halaman link</span></label>
+      <button type="submit" class="btn primary" id="lk-save">Simpan</button>
+      <button type="button" class="btn ghost" id="lk-cancel">Batal</button>
+    </form>
+  </div>
+
   <!-- ================= MODAL HAPUS ================= -->
   <div class="modal" id="modal-delete" hidden role="dialog" aria-modal="true" aria-labelledby="del-title">
     <div class="modal-card">
@@ -329,7 +388,7 @@
   'use strict';
   var API = "https://script.google.com/macros/s/AKfycbxAW4E6R7YJ_ZKuU4__j3sqUR7TpnDbfrIRNdNi8cLom5_-xmpw_GKr1gPPhj4w9AzLUA/exec";
   var TOKEN_KEY = 'bca_admin_token';
-  var FNS = ["getDashboard","getSubmission","updateSubmission","deleteSubmission","getMaskedText","exportCsv"];
+  var FNS = ["getDashboard","getSubmission","updateSubmission","deleteSubmission","getMaskedText","exportCsv","getLinks","saveLink","deleteLink","moveLink"];
   function getToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; } }
   function setToken(t) { try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch (e) { /* abaikan */ } }
   function post(body) {
@@ -399,11 +458,8 @@
     var out = document.createElement('button');
     out.type = 'button'; out.className = 'btn small ghost'; out.textContent = 'Keluar';
     out.addEventListener('click', function () { setToken(''); location.reload(); });
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end';
-    var refresh = document.getElementById('btn-refresh');
-    if (refresh) { top.replaceChild(wrap, refresh); wrap.appendChild(refresh); }
-    else top.appendChild(wrap);
+    var wrap = top.querySelector('.top-actions');
+    if (!wrap) { wrap = document.createElement('div'); wrap.className = 'top-actions'; top.appendChild(wrap); }
     wrap.appendChild(out);
   }
 
@@ -596,6 +652,7 @@
   function showView(name) {
     $('view-list').hidden = name !== 'list';
     $('view-detail').hidden = name !== 'detail';
+    $('view-links').hidden = name !== 'links';
     window.scrollTo(0, 0);
   }
 
@@ -702,6 +759,107 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !$('modal-delete').hidden) $('modal-delete').hidden = true;
+    if (e.key === 'Escape' && !$('modal-link').hidden) $('modal-link').hidden = true;
+  });
+
+  // ---------- Halaman link Adit ----------
+  var SECTION_LABEL = { utama: 'Tombol utama', bisnis: 'Business inquiries', produk: 'Produk affiliate' };
+  var links = [];
+  var editingId = null;
+
+  function loadLinks() {
+    $('lk-info').textContent = 'Memuat…';
+    call('getLinks').then(renderLinks).catch(function (e) { $('lk-info').textContent = ''; toast(e.message, true); });
+  }
+
+  function renderLinks(list) {
+    links = list || [];
+    var box = $('lk-groups');
+    box.textContent = '';
+    var shown = links.filter(function (l) { return l.active; }).length;
+    $('lk-info').textContent = links.length + ' link · ' + shown + ' tampil';
+    Object.keys(SECTION_LABEL).forEach(function (sec) {
+      var items = links.filter(function (l) { return l.section === sec; });
+      var ul = el('ul', { class: 'list' });
+      items.forEach(function (l, i) {
+        var up = el('button', { type: 'button', class: 'btn small ghost', 'aria-label': 'Naikkan', text: '▲' });
+        var down = el('button', { type: 'button', class: 'btn small ghost', 'aria-label': 'Turunkan', text: '▼' });
+        var edit = el('button', { type: 'button', class: 'btn small ghost', text: 'Ubah' });
+        var del = el('button', { type: 'button', class: 'btn small danger', text: 'Hapus' });
+        up.disabled = i === 0; down.disabled = i === items.length - 1;
+        up.addEventListener('click', function () { moveLink(l.id, -1); });
+        down.addEventListener('click', function () { moveLink(l.id, 1); });
+        edit.addEventListener('click', function () { openLinkForm(l); });
+        del.addEventListener('click', function () {
+          if (!window.confirm('Hapus link "' + l.title + '"?')) return;
+          call('deleteLink', l.id).then(function (res) { renderLinks(res); toast('Link dihapus.'); })
+            .catch(function (e) { toast(e.message, true); });
+        });
+        ul.appendChild(el('li', { class: 'item lk-item' + (l.active ? '' : ' is-off') }, [
+          el('div', { class: 'item-top' }, [
+            el('span', { class: 'item-title', text: l.title }),
+            l.active ? null : el('span', { class: 'badge b-status', text: 'Tersembunyi' }),
+            l.price ? el('span', { class: 'badge b-status', text: l.price }) : null
+          ]),
+          l.subtitle ? el('p', { class: 'item-meta', text: l.subtitle }) : null,
+          el('p', { class: 'item-meta lk-url', text: l.url || '(link belum diisi)' }),
+          el('div', { class: 'lk-actions' }, [up, down, edit, del])
+        ]));
+      });
+      box.appendChild(el('h2', { class: 'lk-h', text: SECTION_LABEL[sec] + ' (' + items.length + ')' }));
+      box.appendChild(items.length ? ul : el('p', { class: 'hint', text: 'Belum ada link di bagian ini.' }));
+    });
+  }
+
+  function moveLink(id, dir) {
+    call('moveLink', id, dir).then(renderLinks).catch(function (e) { toast(e.message, true); });
+  }
+
+  function updateLinkForm() {
+    var sec = $('lk-section').value;
+    $('lk-product-fields').hidden = sec !== 'produk';
+    $('lk-url-hint').textContent = sec === 'bisnis'
+      ? 'Email: mailto:halo@contoh.com · WhatsApp: https://wa.me/62812xxxx · Form: https://…'
+      : sec === 'produk' ? 'Link affiliate (Shopee, Tokopedia, dll.). Label "Link afiliasi" tampil otomatis.'
+      : 'Link biasa diawali https://';
+  }
+  $('lk-section').addEventListener('change', updateLinkForm);
+
+  function openLinkForm(l) {
+    editingId = l ? l.id : null;
+    $('lk-title').textContent = l ? 'Ubah link' : 'Tambah link';
+    $('lk-section').value = l ? l.section : 'utama';
+    $('lk-name').value = l ? l.title : '';
+    $('lk-sub').value = l ? l.subtitle : '';
+    $('lk-url').value = l ? l.url : '';
+    $('lk-img').value = l ? l.imageUrl : '';
+    $('lk-price').value = l ? l.price : '';
+    $('lk-active').checked = l ? l.active : true;
+    updateLinkForm();
+    $('modal-link').hidden = false;
+    setTimeout(function () { $('lk-name').focus(); }, 50);
+  }
+
+  $('btn-links').addEventListener('click', function () { showView('links'); loadLinks(); });
+  $('lk-back').addEventListener('click', function () { showView('list'); });
+  $('lk-add').addEventListener('click', function () { openLinkForm(null); });
+  $('lk-cancel').addEventListener('click', function () { $('modal-link').hidden = true; });
+  $('lk-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var btn = $('lk-save');
+    var sec = $('lk-section').value;
+    var data = {
+      id: editingId, section: sec, title: $('lk-name').value, subtitle: $('lk-sub').value,
+      url: $('lk-url').value.trim(), imageUrl: sec === 'produk' ? $('lk-img').value.trim() : '',
+      price: sec === 'produk' ? $('lk-price').value : '', active: $('lk-active').checked
+    };
+    btn.disabled = true;
+    call('saveLink', data).then(function (res) {
+      btn.disabled = false;
+      $('modal-link').hidden = true;
+      renderLinks(res);
+      toast('Tersimpan ✓');
+    }).catch(function (e) { btn.disabled = false; toast(e.message, true); });
   });
 
   load(false);
