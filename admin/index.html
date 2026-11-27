@@ -73,6 +73,10 @@
     .ico svg { width: 16px; height: 16px; }
     .install .btn { margin-top: 4px; }
     .install .done { color: #3E6B41; font-weight: 600; }
+    .acct-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .acct-row a { display: block; text-align: center; padding: 8px 4px; border: 1px solid var(--line); border-radius: 10px; background: #fff;
+      color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 600; }
+    .acct-row a.is-current { border-color: var(--accent); background: var(--accent-soft); }
   </style>
 </head>
 <body>
@@ -143,6 +147,11 @@
       <button class="btn ghost" type="button" id="launcher-frame">Tampilkan di dalam aplikasi</button>
       <button class="btn ghost" type="button" id="launcher-change">Ganti URL admin</button>
       <p class="hint" id="launcher-hint">Di iPhone, login Google hanya bisa di halaman Google langsung, jadi dashboard dibuka di luar bingkai aplikasi.</p>
+      <div class="card" id="acct">
+        <p style="margin:0 0 6px"><b>Muncul “Maaf, saat ini tidak dapat membuka file”?</b></p>
+        <p class="hint" style="margin:0 0 8px">Browser ini login ke lebih dari satu akun Google. Coba buka dengan akun ke-2, ke-3, dst. sampai dashboard terbuka — pilihan yang berhasil akan diingat.</p>
+        <div class="acct-row" id="acct-row"></div>
+      </div>
     </div>
   </section>
 
@@ -241,6 +250,7 @@
     $('launcher').hidden = false;
     $('launcher-open').href = url;
     $('launcher-hint').hidden = !IS_IOS;
+    renderAccounts(url);
     var already = true;
     try {
       already = sessionStorage.getItem('bca_auto_opened') === '1';
@@ -255,6 +265,29 @@
       $('launcher-text').textContent = 'Ketuk tombol di bawah untuk membuka dashboard.';
     }
     renderInstall($('launcher').querySelector('.box'));
+  }
+
+  // Apps Script "Only myself" + beberapa akun Google di browser = error "tidak dapat membuka file"
+  // kalau pemilik bukan akun pertama. /macros/u/N/s/… memilih akun ke-(N+1).
+  function withAccount(url, n) {
+    var base = url.replace(/\/macros\/u\/\d{1,2}\/s\//, '/macros/s/');
+    return n === 0 ? base : base.replace('/macros/s/', '/macros/u/' + n + '/s/');
+  }
+  function accountIndex(url) { var m = url.match(/\/macros\/u\/(\d{1,2})\/s\//); return m ? Number(m[1]) : 0; }
+  function renderAccounts(url) {
+    var row = $('acct-row');
+    row.textContent = '';
+    var cur = accountIndex(url);
+    for (var n = 0; n < 4; n++) {
+      var a = document.createElement('a');
+      a.href = withAccount(url, n);
+      a.textContent = 'Akun ' + (n + 1);
+      if (n === cur) a.className = 'is-current';
+      a.addEventListener('click', (function (target) {
+        return function () { setUrl(target); }; // diingat; tautan tetap membuka dashboard
+      })(a.href));
+      row.appendChild(a);
+    }
   }
 
   function start(url, auto) {
