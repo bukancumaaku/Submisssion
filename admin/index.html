@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
@@ -9,365 +9,708 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="BCA Admin">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>BCA Admin</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #F4EFE6; --card: #FFFBF5; --ink: #2A2733; --muted: #6B6575; --line: #E2D8C8;
-      --accent: #C9643F; --accent-soft: #F6E1D5; --red: #C9553A; --red-soft: #F7DDD5;
-      --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    }
-    * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); }
+  :root {
+    --bg: #F4EFE6;
+    --card: #FFFBF5;
+    --ink: #2A2733;
+    --muted: #6B6575;
+    --line: #E2D8C8;
+    --accent: #C9643F;
+    --accent-soft: #F6E1D5;
+    --green: #5E8C61;
+    --green-soft: #E2EDE1;
+    --red: #C9553A;
+    --red-soft: #F7DDD5;
+    --orange: #C9643F;
+    --orange-soft: #FBE6D6;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-head: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.5; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 16px 16px 56px; }
+  [hidden] { display: none !important; }
+  h1, h2 { font-family: var(--font-head); margin: 0; line-height: 1.25; }
+  h1 { font-size: 20px; font-weight: 800; }
+  h2 { font-size: 17px; margin-bottom: 6px; }
+  .eyebrow { margin: 0 0 2px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+  .hint { font-size: 12px; color: var(--muted); margin: 4px 0 8px; }
 
-    /* Layar pembuka / pengaturan */
-    .screen { min-height: 100%; display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top)) 20px 24px; }
-    .box { width: 100%; max-width: 420px; text-align: center; }
-    .logo { width: 112px; height: 112px; border-radius: 50%; box-shadow: 0 4px 16px rgba(42, 39, 51, .18); }
-    h1 { font-size: 22px; margin: 14px 0 4px; }
-    p { margin: 6px 0; }
-    .muted { color: var(--muted); font-size: 14px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 16px; margin-top: 18px; text-align: left; }
-    label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
-    input { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
-    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-    .hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
-    .err { background: var(--red-soft); border: 1px solid var(--red); color: #7A2E1D; border-radius: 10px; padding: 8px 12px; font-size: 13.5px; margin-top: 10px; }
-    .btn { display: block; width: 100%; min-height: 46px; margin-top: 12px; border: 0; border-radius: 999px; font: 700 15px var(--font); cursor: pointer; text-decoration: none; text-align: center; line-height: 46px; padding: 0 16px; }
-    .btn.primary { background: var(--accent); color: #fff; }
-    .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); line-height: 44px; }
-    .spinner { width: 28px; height: 28px; margin: 18px auto 0; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 16px; }
 
-    /* Dashboard */
-    #app { position: fixed; inset: 0; padding-top: env(safe-area-inset-top); background: var(--bg); }
-    #frame { width: 100%; height: 100%; border: 0; display: block; background: var(--bg); }
-    #loading { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); }
+  /* ---------- Buttons ---------- */
+  .btn { display: block; width: 100%; min-height: 42px; border: 0; border-radius: 999px; padding: 8px 16px; margin-top: 8px;
+    font-family: var(--font-head); font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn.small { width: auto; min-height: 36px; font-size: 13px; padding: 6px 14px; margin-top: 0; }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn.secondary { background: var(--green); color: #fff; }
+  .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn.danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
+  .btn.danger:not(:disabled):hover { background: var(--red); color: #fff; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
-    /* Tombol menu kecil */
-    #menu-btn { position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid var(--line); background: rgba(255, 251, 245, .92); color: var(--ink); font: 700 20px var(--font);
-      box-shadow: 0 2px 10px rgba(42, 39, 51, .18); cursor: pointer; z-index: 10; }
-    #menu { position: fixed; right: 12px; bottom: calc(64px + env(safe-area-inset-bottom)); width: 240px; background: var(--card);
-      border: 1px solid var(--line); border-radius: 14px; padding: 6px; box-shadow: 0 6px 24px rgba(42, 39, 51, .2); z-index: 11; }
-    #menu button, #menu a { display: block; width: 100%; text-align: left; padding: 10px 12px; border: 0; background: none; border-radius: 10px;
-      font: 500 14px var(--font); color: var(--ink); text-decoration: none; cursor: pointer; }
-    #menu button:hover, #menu a:hover { background: var(--accent-soft); }
-    #offline { position: fixed; left: 12px; right: 68px; bottom: calc(12px + env(safe-area-inset-bottom)); background: var(--ink); color: #fff;
-      border-radius: 12px; padding: 10px 14px; font-size: 13.5px; z-index: 9; }
+  /* ---------- Crisis banner ---------- */
+  .crisis-banner { display: block; width: 100%; text-align: left; border: 2px solid var(--red); background: var(--red); color: #fff;
+    border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 12px; font: 700 14px var(--font-head); cursor: pointer; }
 
-    /* Panduan pasang ke layar utama */
-    .install { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-top: 18px; text-align: left; }
-    .install h2 { font-size: 15px; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
-    .install ol { margin: 0; padding: 0; list-style: none; counter-reset: st; }
-    .install li { counter-increment: st; display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 14px; }
-    .install li:first-child { border-top: 0; }
-    .install li::before { content: counter(st); flex: 0 0 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
-      font: 700 12px/22px var(--font); text-align: center; margin-top: 1px; }
-    .ico { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: #fff; border: 1px solid var(--line);
-      vertical-align: middle; margin: 0 2px; color: #0A84FF; }
-    .ico svg { width: 16px; height: 16px; }
-    .install .btn { margin-top: 4px; }
-    .install .done { color: #3E6B41; font-weight: 600; }
-    .acct-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-    .acct-row a { display: block; text-align: center; padding: 8px 4px; border: 1px solid var(--line); border-radius: 10px; background: #fff;
-      color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 600; }
-    .acct-row a.is-current { border-color: var(--accent); background: var(--accent-soft); }
-  </style>
+  /* ---------- Stats ---------- */
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .stat-n { margin: 0; font: 800 22px var(--font-head); font-variant-numeric: tabular-nums; }
+  .stat-l { margin: 0; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .stat-red .stat-n { color: var(--red); }
+  .stat-orange .stat-n { color: var(--orange); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+  .chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+  .chip b { font-variant-numeric: tabular-nums; }
+
+  /* ---------- Filters ---------- */
+  .filters { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 12px; }
+  .filters summary { font: 700 14px var(--font-head); cursor: pointer; padding: 2px 0; }
+  .filter-grid { display: grid; gap: 10px; margin-top: 10px; }
+  .f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+  input[type=search], input[type=text], input[type=url], select, textarea {
+    width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: #fff;
+    border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 10px; min-height: 40px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .toggles { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .toggle { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px;
+    background: #fff; color: var(--ink); cursor: pointer; min-height: 36px; }
+  .toggle input { width: 15px; height: 15px; }
+  .t-red:has(input:checked) { border-color: var(--red); background: var(--red-soft); }
+  .t-orange:has(input:checked) { border-color: var(--orange); background: var(--orange-soft); }
+  .filter-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+  /* ---------- List ---------- */
+  .result-info { font-size: 12.5px; color: var(--muted); margin: 4px 0 8px; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .item { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; cursor: pointer;
+    display: grid; gap: 2px; }
+  .item:hover, .item:focus-visible { border-color: var(--accent); outline: none; }
+  .item.is-crisis { border-color: var(--red); border-width: 2px; background: #FFF6F3; }
+  .item-top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .item-code { font: 800 13px var(--font-head); letter-spacing: .04em; }
+  .item-title { font-weight: 600; margin: 0; font-size: 14px; }
+  .item-meta { font-size: 12px; color: var(--muted); margin: 0; }
+  .badge { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; letter-spacing: .03em; }
+  .b-crisis { background: var(--red); color: #fff; }
+  .b-sensitive { background: var(--orange-soft); color: #8A3E1F; border: 1px solid var(--orange); }
+  .b-status { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+  .s-Baru { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .s-Dipertimbangkan { background: #EFE6C9; }
+  .s-Diproduksi { background: var(--green-soft); border-color: var(--green); }
+  .s-Sudah-tayang { background: var(--green); color: #fff; border-color: var(--green); }
+  .s-Ditolak { background: #ECE8E2; color: var(--muted); }
+
+  /* ---------- Detail ---------- */
+  .back { margin-bottom: 14px; }
+  .alert { border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px; font-size: 13.5px; }
+  .alert p { margin: 2px 0; }
+  .a-crisis { background: var(--red-soft); border: 2px solid var(--red); }
+  .a-crisis strong { color: var(--red); }
+  .a-sensitive { background: var(--orange-soft); border: 1px solid var(--orange); }
+  .reader { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 16px; margin-bottom: 14px; }
+  .meta { font-size: 12.5px; color: var(--muted); margin: 0 0 10px; }
+  .d-title { font-size: 19px; margin-bottom: 4px; }
+  .d-alias { margin: 0 0 14px; font-size: 13.5px; color: var(--muted); font-weight: 600; }
+  .d-story { font-size: 16px; line-height: 1.75; max-width: 66ch; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  .panel-row { margin-bottom: 12px; }
+  .panel-row label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .contact { font-size: 13.5px; padding: 10px 12px; background: #fff; border-radius: var(--radius-sm); border: 1px dashed var(--line); margin-top: 14px; overflow-wrap: anywhere; }
+  .mask-box { margin-top: 10px; }
+  .mask-box textarea { font-size: 14px; line-height: 1.6; }
+
+  /* ---------- Modal & toast ---------- */
+  .modal { position: fixed; inset: 0; background: rgba(42, 39, 51, .55); display: grid; place-items: center; padding: 16px; z-index: 20; }
+  .modal-card { background: var(--card); border-radius: var(--radius); padding: 22px 18px; width: 100%; max-width: 420px; }
+  .modal-card label { display: block; font-weight: 600; margin: 12px 0 6px; }
+  .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: #fff;
+    padding: 10px 16px; border-radius: 999px; font-size: 13.5px; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
+  .toast.err { background: var(--red); }
+
+  @media (min-width: 720px) {
+    .stats { grid-template-columns: repeat(4, 1fr); }
+    .filter-grid { grid-template-columns: 2fr 1fr 1fr; }
+    .filter-grid .toggles { grid-column: 1 / -1; }
+    .reader { padding: 28px 32px; }
+    .d-story { font-size: 16.5px; }
+    input[type=search], input[type=text], input[type=url], select, textarea { font-size: 14px; }
+  }
+  /* ---------- Brand ---------- */
+  .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .logo { width: 72px; height: 72px; border-radius: 50%; flex: 0 0 auto; box-shadow: 0 2px 8px rgba(42, 39, 51, .15); }
+  .top { align-items: center; }
+  .opt { color: var(--muted); font-weight: 400; }
+  .hint.warn { color: #8A3E1F; font-weight: 600; }
+  @media (min-width: 720px) { .logo { width: 88px; height: 88px; } .brand h1 { font-size: 24px; } }
+</style>
+<style>
+  .login { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center;
+    padding: max(24px, env(safe-area-inset-top)) 20px 24px; overflow-y: auto; }
+  .login-box { width: 100%; max-width: 380px; text-align: center; }
+  .login-box .logo { width: 104px; height: 104px; }
+  .login-box h1 { margin: 12px 0 2px; }
+  .login-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 16px; margin-top: 18px; text-align: left; }
+  .login-card label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+  .login-card input { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; min-height: 44px; border: 1px solid var(--line);
+    border-radius: 10px; background: #fff; color: var(--ink); }
+  .login-err { background: var(--red-soft); border: 1px solid var(--red); color: #7A2E1D; border-radius: 10px; padding: 8px 12px;
+    font-size: 13.5px; margin-top: 10px; }
+  body.locked { overflow: hidden; }
+</style>
 </head>
-<body>
+<body data-pwa-origin="">
+<main class="wrap">
 
-  <!-- Pengaturan pertama kali: URL admin disimpan di perangkat ini saja, tidak ada di repo -->
-  <section id="setup" class="screen" hidden>
-    <div class="box">
-      <img class="logo" src="icons/adit-240.jpg" alt="Adit" width="112" height="112">
-      <h1>BCA Admin</h1>
-      <p class="muted">Dashboard kiriman cerita Bukan Cuma Aku</p>
-      <form class="card" id="setup-form" novalidate>
-        <label for="url">URL web app admin</label>
-        <input id="url" type="url" inputmode="url" autocomplete="off" spellcheck="false"
-               placeholder="https://script.google.com/macros/s/…/exec">
-        <p class="hint">Tempel URL <strong>/exec</strong> proyek BCA Admin. URL ini hanya disimpan di perangkat ini.</p>
-        <div class="err" id="setup-err" role="alert" hidden></div>
-        <button class="btn primary" type="submit">Simpan &amp; buka</button>
-      </form>
+  <!-- ================= DAFTAR ================= -->
+  <section id="view-list">
+    <header class="top">
+      <div class="brand">
+        <img class="logo" src="icons/adit-240.jpg" alt="Adit, maskot Bukan Cuma Aku" width="72" height="72">
+        <div>
+          <p class="eyebrow">Admin · Bukan Cuma Aku</p>
+          <h1>Kiriman cerita</h1>
+        </div>
+      </div>
+      <button type="button" class="btn small ghost" id="btn-refresh" aria-label="Muat ulang">↻ Muat ulang</button>
+    </header>
+
+    <button type="button" id="crisis-banner" class="crisis-banner" hidden></button>
+
+    <div class="stats" id="stats">
+      <div class="stat"><p class="stat-n" id="st-total">–</p><p class="stat-l">Total</p></div>
+      <div class="stat"><p class="stat-n" id="st-baru">–</p><p class="stat-l">Baru</p></div>
+      <div class="stat stat-red"><p class="stat-n" id="st-crisis">–</p><p class="stat-l">Krisis</p></div>
+      <div class="stat stat-orange"><p class="stat-n" id="st-sensitive">–</p><p class="stat-l">Sensitif</p></div>
     </div>
+    <div class="chips" id="cat-stats" aria-label="Jumlah per kategori"></div>
+
+    <details class="filters" open>
+      <summary>Filter &amp; cari</summary>
+      <div class="filter-grid">
+        <label class="f">
+          <span>Cari</span>
+          <input type="search" id="f-q" placeholder="Kode, nama samaran, isi cerita, catatan…">
+        </label>
+        <label class="f">
+          <span>Status</span>
+          <select id="f-status">
+            <option value="">Semua status</option>
+            <option value="Baru">Baru</option>
+            <option value="Dibaca">Dibaca</option>
+            <option value="Dipertimbangkan">Dipertimbangkan</option>
+            <option value="Diproduksi">Diproduksi</option>
+            <option value="Sudah tayang">Sudah tayang</option>
+            <option value="Ditolak">Ditolak</option>
+          </select>
+        </label>
+        <label class="f">
+          <span>Kategori</span>
+          <select id="f-category">
+            <option value="">Semua kategori</option>
+            <option value="Gaji &amp; uang">Gaji &amp; uang</option>
+            <option value="Keluarga">Keluarga</option>
+            <option value="Pekerjaan">Pekerjaan</option>
+            <option value="Generasi sandwich">Generasi sandwich</option>
+            <option value="Bertahan hidup">Bertahan hidup</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </label>
+        <div class="f toggles">
+          <label class="toggle t-red"><input type="checkbox" id="f-crisis"> <span>Hanya KRISIS</span></label>
+          <label class="toggle t-orange"><input type="checkbox" id="f-sensitive"> <span>Hanya SENSITIF</span></label>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button type="button" class="btn small ghost" id="btn-reset">Reset filter</button>
+        <button type="button" class="btn small secondary" id="btn-export">Ekspor CSV (Dipertimbangkan/Diproduksi)</button>
+      </div>
+    </details>
+
+    <p class="result-info" id="result-info" aria-live="polite">Memuat…</p>
+    <ul class="list" id="list"></ul>
+    <button type="button" class="btn ghost" id="btn-more" hidden>Muat lebih banyak</button>
   </section>
 
-  <!-- Panduan pasang: dipindah oleh JS ke layar yang sedang tampil -->
-  <div class="install" id="install" hidden>
-    <h2>📲 Pasang BCA Admin di layar utama</h2>
+  <!-- ================= DETAIL ================= -->
+  <section id="view-detail" hidden>
+    <button type="button" class="btn small ghost back" id="btn-back">← Kembali ke daftar</button>
 
-    <div data-for="prompt">
-      <p class="muted">Pasang supaya bisa dibuka dari ikon Adit seperti aplikasi biasa.</p>
-      <button class="btn primary" type="button" id="install-btn">Pasang aplikasi</button>
+    <div id="d-alerts"></div>
+
+    <article class="reader">
+      <p class="meta" id="d-meta"></p>
+      <h1 class="d-title" id="d-title"></h1>
+      <p class="d-alias" id="d-alias"></p>
+      <div class="d-story" id="d-story"></div>
+    </article>
+
+    <aside class="panel">
+      <div class="panel-row">
+        <label for="d-status">Status</label>
+        <select id="d-status">
+          <option value="Baru">Baru</option>
+            <option value="Dibaca">Dibaca</option>
+            <option value="Dipertimbangkan">Dipertimbangkan</option>
+            <option value="Diproduksi">Diproduksi</option>
+            <option value="Sudah tayang">Sudah tayang</option>
+            <option value="Ditolak">Ditolak</option>
+        </select>
+      </div>
+      <div class="panel-row">
+        <label for="d-note">Catatan admin</label>
+        <textarea id="d-note" rows="4" maxlength="5000" placeholder="Ide adaptasi, episode, hal yang perlu disamarkan…"></textarea>
+      </div>
+      <div class="panel-row">
+        <label for="d-url">Link konten <span class="opt">(untuk status Sudah tayang)</span></label>
+        <input type="url" id="d-url" maxlength="500" inputmode="url" placeholder="https://www.instagram.com/p/…" autocomplete="off">
+        <p class="hint" id="d-url-hint">Pengirim bisa membuka link ini di halaman Cek status saat statusnya <strong>Sudah tayang</strong>.</p>
+      </div>
+      <button type="button" class="btn primary" id="btn-save">Simpan</button>
+
+      <div class="panel-row contact" id="d-contact"></div>
+
+      <button type="button" class="btn secondary" id="btn-mask">Salin versi tersamar</button>
+      <div id="mask-box" class="mask-box" hidden>
+        <p class="hint">Versi tersamar (sudah dicoba disalin ke clipboard — kalau gagal, pilih teks ini lalu salin manual). Tetap periksa ulang sebelum dipakai.</p>
+        <textarea id="mask-text" rows="10" readonly></textarea>
+      </div>
+
+      <button type="button" class="btn danger" id="btn-delete">Hapus permanen</button>
+    </aside>
+  </section>
+
+  <!-- ================= MODAL HAPUS ================= -->
+  <div class="modal" id="modal-delete" hidden role="dialog" aria-modal="true" aria-labelledby="del-title">
+    <div class="modal-card">
+      <h2 id="del-title">Hapus permanen?</h2>
+      <p>Kiriman <strong id="del-code"></strong> akan dihapus dari Sheet dan <strong>tidak bisa dikembalikan</strong>.</p>
+      <label for="del-input">Ketik kodenya untuk konfirmasi:</label>
+      <input type="text" id="del-input" autocomplete="off" autocapitalize="characters">
+      <button type="button" class="btn danger" id="btn-del-confirm" disabled>Ya, hapus permanen</button>
+      <button type="button" class="btn ghost" id="btn-del-cancel">Batal</button>
     </div>
-
-    <ol data-for="ios-safari">
-      <li><span>Ketuk tombol <b>Bagikan</b>
-        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>
-        di bar bawah Safari.</span></li>
-      <li><span>Gulir ke bawah, pilih <b>Tambah ke Layar Utama</b>
-        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>.</span></li>
-      <li><span>Ketuk <b>Tambah</b> di kanan atas. Ikon Adit muncul di layar utama.</span></li>
-    </ol>
-
-    <ol data-for="ios-other">
-      <li><span>Ketuk ikon <b>Bagikan</b>
-        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>
-        di kanan bar alamat.</span></li>
-      <li><span>Pilih <b>Tambahkan ke Layar Utama</b>, lalu <b>Tambah</b>.</span></li>
-      <li><span>Pilihannya tidak ada? Salin link ini dan buka di <b>Safari</b>.
-        <button class="btn ghost" type="button" id="copy-link">Salin link</button></span></li>
-    </ol>
-
-    <ol data-for="android">
-      <li><span>Ketuk menu <b>⋮</b> di kanan atas Chrome.</span></li>
-      <li><span>Pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</span></li>
-      <li><span>Ketuk <b>Instal</b>. Ikon Adit muncul di layar utama.</span></li>
-    </ol>
-
-    <ol data-for="desktop">
-      <li><span>Di Chrome/Edge, klik ikon <b>Instal</b> ⊕ di ujung kanan bar alamat.</span></li>
-      <li><span>Klik <b>Instal</b>. BCA Admin terbuka di jendela sendiri.</span></li>
-    </ol>
   </div>
 
-  <!-- Mode "buka langsung" (default di iPhone/iPad: login Google diblokir di dalam iframe) -->
-  <section id="launcher" class="screen" hidden>
-    <div class="box">
-      <img class="logo" src="icons/adit-240.jpg" alt="Adit" width="112" height="112">
-      <h1>BCA Admin</h1>
-      <p class="muted" id="launcher-text">Membuka dashboard…</p>
-      <a class="btn primary" id="launcher-open" href="#">Buka dashboard</a>
-      <button class="btn ghost" type="button" id="launcher-frame">Tampilkan di dalam aplikasi</button>
-      <button class="btn ghost" type="button" id="launcher-change">Ganti URL admin</button>
-      <p class="hint" id="launcher-hint">Di iPhone, login Google hanya bisa di halaman Google langsung, jadi dashboard dibuka di luar bingkai aplikasi.</p>
-      <div class="card" id="acct">
-        <p style="margin:0 0 6px"><b>Muncul “Maaf, saat ini tidak dapat membuka file”?</b></p>
-        <p class="hint" style="margin:0 0 8px">Browser ini login ke lebih dari satu akun Google. Coba buka dengan akun ke-2, ke-3, dst. sampai dashboard terbuka — pilihan yang berhasil akan diingat.</p>
-        <div class="acct-row" id="acct-row"></div>
-      </div>
-    </div>
-  </section>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</main>
 
-  <!-- Dashboard di dalam aplikasi -->
-  <section id="app" hidden>
-    <iframe id="frame" title="Dashboard admin Bukan Cuma Aku" allow="clipboard-write"></iframe>
-    <div id="loading">
-      <div class="box">
-        <img class="logo" src="icons/adit-240.jpg" alt="" width="112" height="112">
-        <div class="spinner" aria-hidden="true"></div>
-        <p class="muted" id="loading-text">Membuka dashboard…</p>
-        <a class="btn ghost" id="loading-direct" href="#" hidden>Tidak muncul? Buka langsung</a>
-      </div>
-    </div>
-    <div id="offline" role="status" hidden>Kamu sedang offline. Dashboard butuh internet.</div>
-    <button id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu">⋯</button>
-    <div id="menu" role="menu" hidden>
-      <button type="button" role="menuitem" id="m-reload">↻ Muat ulang dashboard</button>
-      <a role="menuitem" id="m-direct" href="#">↗ Buka langsung (kalau perlu login Google)</a>
-      <button type="button" role="menuitem" id="m-mode">⇱ Selalu buka langsung</button>
-      <button type="button" role="menuitem" id="m-change">⚙ Ganti URL admin</button>
-    </div>
-  </section>
+<div class="login" id="login" hidden>
+  <div class="login-box">
+    <img class="logo" src="icons/adit-240.jpg" alt="Adit, maskot Bukan Cuma Aku" width="104" height="104">
+    <h1>BCA Admin</h1>
+    <p class="hint">Dashboard kiriman cerita Bukan Cuma Aku</p>
+    <form class="login-card" id="login-form" novalidate>
+      <label for="login-pass">Password admin</label>
+      <input id="login-pass" type="password" autocomplete="current-password" required>
+      <div class="login-err" id="login-err" role="alert" hidden></div>
+      <button class="btn primary" type="submit" id="login-btn">Masuk</button>
+    </form>
+    <p class="hint" style="margin-top:14px">📲 Pasang di HP — iPhone (Safari): <b>Bagikan</b> → <b>Tambah ke Layar Utama</b>.
+      Android (Chrome): <b>⋮</b> → <b>Instal aplikasi</b>.</p>
+  </div>
+</div>
+<script>
+/* Pengganti google.script.run: memanggil doPost() proyek ADMIN dengan token sesi. */
+(function () {
+  'use strict';
+  var API = "https://script.google.com/macros/s/AKfycbxAW4E6R7YJ_ZKuU4__j3sqUR7TpnDbfrIRNdNi8cLom5_-xmpw_GKr1gPPhj4w9AzLUA/exec";
+  var TOKEN_KEY = 'bca_admin_token';
+  var FNS = ["getDashboard","getSubmission","updateSubmission","deleteSubmission","getMaskedText","exportCsv"];
+  function getToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function setToken(t) { try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch (e) { /* abaikan */ } }
+  function post(body) {
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body),
+      credentials: 'omit',
+      cache: 'no-store'
+    }).then(function (r) {
+      if (!r.ok) throw new Error('Server tidak menjawab (HTTP ' + r.status + ').');
+      return r.json();
+    });
+  }
+  function showLogin(msg) {
+    var box = document.getElementById('login');
+    box.hidden = false;
+    document.body.classList.add('locked');
+    var err = document.getElementById('login-err');
+    err.hidden = !msg; err.textContent = msg || '';
+    setTimeout(function () { document.getElementById('login-pass').focus(); }, 50);
+  }
+  function runner() {
+    var ok = function () {}, fail = function () {};
+    var r = {
+      withSuccessHandler: function (f) { ok = f; return r; },
+      withFailureHandler: function (f) { fail = f; return r; }
+    };
+    FNS.forEach(function (fn) {
+      r[fn] = function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (!getToken()) { showLogin(''); fail(new Error('Silakan masuk dulu.')); return; }
+        post({ action: 'call', token: getToken(), fn: fn, args: args }).then(function (res) {
+          if (res && res.ok) return ok(res.data);
+          if (res && res.auth) { setToken(''); showLogin(res.message); }
+          fail(new Error((res && res.message) || 'Permintaan gagal.'));
+        }, function () {
+          fail(new Error('Koneksi gagal. Cek internet lalu coba lagi.'));
+        });
+      };
+    });
+    return r;
+  }
+  window.google = { script: {} };
+  Object.defineProperty(window.google.script, 'run', { get: runner });
 
+  document.getElementById('login-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var btn = document.getElementById('login-btn');
+    var pass = document.getElementById('login-pass').value;
+    if (!pass) return showLogin('Isi password dulu.');
+    btn.disabled = true; btn.textContent = 'Memeriksa…';
+    post({ action: 'login', password: pass }).then(function (res) {
+      btn.disabled = false; btn.textContent = 'Masuk';
+      if (!res || !res.ok) return showLogin((res && res.message) || 'Gagal masuk.');
+      setToken(res.token);
+      location.reload();
+    }, function () {
+      btn.disabled = false; btn.textContent = 'Masuk';
+      showLogin('Koneksi gagal. Cek internet lalu coba lagi.');
+    });
+  });
+
+  // Tombol Keluar di header
+  var top = document.querySelector('.top');
+  if (top) {
+    var out = document.createElement('button');
+    out.type = 'button'; out.className = 'btn small ghost'; out.textContent = 'Keluar';
+    out.addEventListener('click', function () { setToken(''); location.reload(); });
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end';
+    var refresh = document.getElementById('btn-refresh');
+    if (refresh) { top.replaceChild(wrap, refresh); wrap.appendChild(refresh); }
+    else top.appendChild(wrap);
+    wrap.appendChild(out);
+  }
+
+  if (!getToken()) showLogin('');
+})();
+</script>
 <script>
 (function () {
   'use strict';
-  var KEY = 'bca_admin_url';
+
+  // Anti-clickjacking: dashboard hanya boleh tampil langsung (script.google.com)
+  // atau di dalam PWA resmi (Script Property PWA_ORIGIN). Browser tanpa
+  // ancestorOrigins (Firefox) dilewati — X-Frame tetap dibatasi server.
+  (function guardFrame() {
+    var allowed = ['https://script.google.com'];
+    var pwa = document.body.getAttribute('data-pwa-origin');
+    if (pwa) allowed.push(pwa);
+    var anc = window.location.ancestorOrigins;
+    if (!anc || !anc.length) return;
+    for (var i = 0; i < anc.length; i++) {
+      if (/googleusercontent\.com$/.test(anc[i])) continue;
+      if (allowed.indexOf(anc[i]) === -1) {
+        document.body.textContent = 'Dashboard ini hanya bisa dibuka dari URL admin atau aplikasi BCA Admin.';
+        document.body.style.cssText = 'font-family:sans-serif;padding:24px';
+        throw new Error('Asal pembungkus tidak diizinkan: ' + anc[i]);
+      }
+    }
+  })();
+
   var $ = function (id) { return document.getElementById(id); };
-  // Boleh dengan /u/N/ (pilih akun Google ke-N kalau browser login ke beberapa akun).
-  var URL_RE = /^https:\/\/script\.google\.com\/(?:a\/[^\/\s]+\/)?macros\/(?:u\/\d{1,2}\/)?s\/[A-Za-z0-9_-]{20,}\/exec$/;
+  var state = { offset: 0, items: [], total: 0, current: null, loading: false };
+  var dateFmt = new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+  });
+  var nf = new Intl.NumberFormat('id-ID');
 
-  function getUrl() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
-  function setUrl(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* abaikan */ } }
-
-  // iPhone/iPad (semua browser di iOS = WebKit) memblokir cookie login Google di dalam iframe → error 401.
-  var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  var MODE_KEY = 'bca_admin_mode';
-  function getMode() {
-    var m = '';
-    try { m = localStorage.getItem(MODE_KEY) || ''; } catch (e) { /* abaikan */ }
-    return m === 'frame' || m === 'direct' ? m : (IS_IOS ? 'direct' : 'frame');
+  // ---------- Util ----------
+  /** Buat elemen. Semua teks lewat textContent → aman dari XSS. */
+  function el(tag, attrs, children) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') e.textContent = attrs[k];
+      else if (k === 'class') e.className = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) e.appendChild(c); });
+    return e;
   }
-  function setMode(m) { try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* abaikan */ } }
+  function fmtDate(iso) { return iso ? dateFmt.format(new Date(iso)) : '-'; }
+  function statusClass(s) { return 'badge b-status s-' + String(s).replace(/\s+/g, '-'); }
 
-  function hideAll() { $('setup').hidden = true; $('app').hidden = true; $('launcher').hidden = true; }
-
-  // ---------- Panduan pasang ke layar utama ----------
-  var deferredPrompt = null;
-  var IS_STANDALONE = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  var IS_ANDROID = /Android/i.test(navigator.userAgent);
-  var IOS_OTHER = IS_IOS && /CriOS|FxiOS|EdgiOS|OPiOS/.test(navigator.userAgent);
-
-  function installVariant() {
-    if (IS_STANDALONE) return '';
-    if (deferredPrompt) return 'prompt';
-    if (IS_IOS) return IOS_OTHER ? 'ios-other' : 'ios-safari';
-    if (IS_ANDROID) return 'android';
-    return 'desktop';
+  var toastTimer;
+  function toast(msg, isErr) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isErr ? ' err' : '');
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, isErr ? 5000 : 2500);
   }
-  function renderInstall(where) {
-    var box = $('install');
-    var v = installVariant();
-    if (where) where.appendChild(box); // pindahkan ke layar yang sedang tampil
-    box.hidden = !v;
-    Array.prototype.forEach.call(box.querySelectorAll('[data-for]'), function (el) {
-      el.hidden = el.getAttribute('data-for') !== v;
+
+  /** google.script.run sebagai Promise. */
+  function call(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (resolve, reject) {
+      var r = google.script.run.withSuccessHandler(resolve).withFailureHandler(function (e) {
+        reject(e && e.message ? e : new Error(String(e)));
+      });
+      r[fn].apply(r, args);
     });
   }
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    renderInstall();
-  });
-  window.addEventListener('appinstalled', function () {
-    deferredPrompt = null;
-    $('install').innerHTML = '<p class="done">✓ BCA Admin sudah terpasang. Buka dari ikon Adit di layar utama.</p>';
-  });
-  $('install-btn').addEventListener('click', function () {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function () { deferredPrompt = null; renderInstall(); });
-  });
-  $('copy-link').addEventListener('click', function () {
-    var btn = this, link = location.href.split('#')[0];
-    function ok() { btn.textContent = 'Tersalin ✓'; }
+
+  function copyText(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(link).then(ok, function () { btn.textContent = link; });
-    } else { btn.textContent = link; }
-  });
-
-  // Buka otomatis sekali per sesi; kalau pengguna kembali ke aplikasi, tampilkan tombol (tanpa loop).
-  function showLauncher(url, auto) {
-    hideAll();
-    $('frame').removeAttribute('src');
-    $('launcher').hidden = false;
-    $('launcher-open').href = url;
-    $('launcher-hint').hidden = !IS_IOS;
-    renderAccounts(url);
-    var already = true;
-    try {
-      already = sessionStorage.getItem('bca_auto_opened') === '1';
-      sessionStorage.setItem('bca_auto_opened', '1');
-    } catch (e) { /* abaikan */ }
-    // Buka otomatis hanya kalau dibuka dari ikon layar utama; di browser biasa tampilkan
-    // dulu panduan pasang.
-    if (auto && !already && IS_STANDALONE) {
-      $('launcher-text').textContent = 'Membuka dashboard…';
-      setTimeout(function () { location.assign(url); }, 400);
-    } else {
-      $('launcher-text').textContent = 'Ketuk tombol di bawah untuk membuka dashboard.';
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return legacyCopy(text); });
     }
-    renderInstall($('launcher').querySelector('.box'));
+    return Promise.resolve(legacyCopy(text));
+  }
+  function legacyCopy(text) {
+    var ta = el('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
   }
 
-  // Apps Script "Only myself" + beberapa akun Google di browser = error "tidak dapat membuka file"
-  // kalau pemilik bukan akun pertama. /macros/u/N/s/… memilih akun ke-(N+1).
-  function withAccount(url, n) {
-    var base = url.replace(/\/macros\/u\/\d{1,2}\/s\//, '/macros/s/');
-    return n === 0 ? base : base.replace('/macros/s/', '/macros/u/' + n + '/s/');
+  // ---------- Filter ----------
+  function filters() {
+    return {
+      q: $('f-q').value.trim(),
+      status: $('f-status').value,
+      category: $('f-category').value,
+      crisis: $('f-crisis').checked,
+      sensitive: $('f-sensitive').checked,
+      offset: state.offset
+    };
   }
-  function accountIndex(url) { var m = url.match(/\/macros\/u\/(\d{1,2})\/s\//); return m ? Number(m[1]) : 0; }
-  function renderAccounts(url) {
-    var row = $('acct-row');
-    row.textContent = '';
-    var cur = accountIndex(url);
-    for (var n = 0; n < 4; n++) {
-      var a = document.createElement('a');
-      a.href = withAccount(url, n);
-      a.textContent = 'Akun ' + (n + 1);
-      if (n === cur) a.className = 'is-current';
-      a.addEventListener('click', (function (target) {
-        return function () { setUrl(target); }; // diingat; tautan tetap membuka dashboard
-      })(a.href));
-      row.appendChild(a);
+
+  function load(append) {
+    if (state.loading) return;
+    state.loading = true;
+    if (!append) { state.offset = 0; $('result-info').textContent = 'Memuat…'; }
+    call('getDashboard', filters()).then(function (res) {
+      state.loading = false;
+      state.total = res.total;
+      state.items = append ? state.items.concat(res.items) : res.items;
+      renderStats(res.stats);
+      renderList();
+    }).catch(function (e) {
+      state.loading = false;
+      $('result-info').textContent = 'Gagal memuat data.';
+      toast(e.message, true);
+    });
+  }
+
+  function renderStats(s) {
+    $('st-total').textContent = nf.format(s.total);
+    $('st-baru').textContent = nf.format(s.baru);
+    $('st-crisis').textContent = nf.format(s.crisis);
+    $('st-sensitive').textContent = nf.format(s.sensitive);
+    var box = $('cat-stats');
+    box.textContent = '';
+    Object.keys(s.byCategory).forEach(function (c) {
+      var chip = el('span', { class: 'chip' }, [el('span', { text: c + ' ' }), el('b', { text: nf.format(s.byCategory[c]) })]);
+      box.appendChild(chip);
+    });
+    var banner = $('crisis-banner');
+    banner.hidden = !s.crisisOpen;
+    banner.textContent = '⚠ ' + s.crisisOpen + ' kiriman KRISIS belum ditangani (status Baru/Dibaca) — ketuk untuk melihat';
+  }
+
+  function renderList() {
+    var list = $('list');
+    list.textContent = '';
+    state.items.forEach(function (it) {
+      var badges = [el('span', { class: 'item-code', text: it.code }), el('span', { class: statusClass(it.status), text: it.status })];
+      if (it.crisis) badges.push(el('span', { class: 'badge b-crisis', text: 'KRISIS' }));
+      if (it.sensitive) badges.push(el('span', { class: 'badge b-sensitive', text: 'SENSITIF' }));
+      var li = el('li', { class: 'item' + (it.crisis ? ' is-crisis' : ''), tabindex: '0', role: 'button',
+        'aria-label': 'Buka kiriman ' + it.code }, [
+        el('div', { class: 'item-top' }, badges),
+        el('p', { class: 'item-title', text: it.title || '(tanpa judul)' }),
+        el('p', { class: 'item-meta', text: fmtDate(it.createdAt) + ' · ' + it.alias + ' · ' + it.category +
+          ' · ' + nf.format(it.storyLength) + ' karakter' })
+      ]);
+      li.addEventListener('click', function () { openDetail(it.code); });
+      li.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(it.code); } });
+      list.appendChild(li);
+    });
+    $('result-info').textContent = state.total
+      ? 'Menampilkan ' + state.items.length + ' dari ' + state.total + ' kiriman'
+      : 'Belum ada kiriman yang cocok.';
+    $('btn-more').hidden = state.items.length >= state.total;
+  }
+
+  var qTimer;
+  $('f-q').addEventListener('input', function () { clearTimeout(qTimer); qTimer = setTimeout(function () { load(false); }, 400); });
+  ['f-status', 'f-category', 'f-crisis', 'f-sensitive'].forEach(function (id) {
+    $(id).addEventListener('change', function () { load(false); });
+  });
+  $('btn-reset').addEventListener('click', function () {
+    $('f-q').value = ''; $('f-status').value = ''; $('f-category').value = '';
+    $('f-crisis').checked = false; $('f-sensitive').checked = false;
+    load(false);
+  });
+  $('btn-refresh').addEventListener('click', function () { load(false); });
+  $('btn-more').addEventListener('click', function () { state.offset = state.items.length; load(true); });
+  $('crisis-banner').addEventListener('click', function () {
+    $('f-crisis').checked = true; $('f-status').value = ''; load(false);
+  });
+
+  // ---------- Ekspor CSV ----------
+  $('btn-export').addEventListener('click', function () {
+    var btn = this; btn.disabled = true;
+    call('exportCsv').then(function (res) {
+      btn.disabled = false;
+      if (!res.count) return toast('Belum ada kiriman berstatus Dipertimbangkan/Diproduksi.');
+      var blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = el('a', { href: url, download: res.filename });
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      toast(res.count + ' kiriman diekspor ke ' + res.filename);
+    }).catch(function (e) { btn.disabled = false; toast(e.message, true); });
+  });
+
+  // ---------- Detail ----------
+  function showView(name) {
+    $('view-list').hidden = name !== 'list';
+    $('view-detail').hidden = name !== 'detail';
+    window.scrollTo(0, 0);
+  }
+
+  function openDetail(code) {
+    showView('detail');
+    $('d-title').textContent = 'Memuat…';
+    $('d-story').textContent = ''; $('d-meta').textContent = ''; $('d-alias').textContent = '';
+    $('d-alerts').textContent = ''; $('mask-box').hidden = true; $('d-contact').textContent = '';
+    call('getSubmission', code).then(renderDetail).catch(function (e) { toast(e.message, true); showView('list'); });
+  }
+
+  function renderDetail(d) {
+    state.current = d;
+    var alerts = $('d-alerts');
+    alerts.textContent = '';
+    if (d.crisis) {
+      alerts.appendChild(el('div', { class: 'alert a-crisis' }, [
+        el('p', {}, [el('strong', { text: 'KRISIS — prioritaskan. ' }),
+          el('span', { text: d.contactOk && d.email ? 'Pengirim boleh dihubungi: pertimbangkan membalas dengan info layanan 119 ext 8 / SAPA 129.' : 'Pengirim tidak meninggalkan kontak. Halaman terima kasih sudah menampilkan info layanan dukungan.' })])
+      ]));
     }
-  }
-
-  function start(url, auto) {
-    if (getMode() === 'direct') showLauncher(url, auto); else showApp(url);
-  }
-
-  function showSetup(prefill) {
-    hideAll();
-    $('setup').hidden = false;
-    renderInstall($('setup').querySelector('.box'));
-    $('url').value = prefill || '';
-  }
-
-  var loadTimer;
-  function showApp(url) {
-    hideAll();
-    $('app').hidden = false;
-    $('loading').hidden = false;
-    $('loading-direct').hidden = true;
-    $('loading-direct').href = url;
-    $('m-direct').href = url;
-    clearTimeout(loadTimer);
-    // Kalau 12 detik belum tampil (mis. perlu login Google di luar aplikasi), tawarkan buka langsung.
-    loadTimer = setTimeout(function () {
-      $('loading-text').textContent = 'Masih memuat… Kalau diminta login Google, buka langsung dulu.';
-      $('loading-direct').hidden = false;
-    }, 12000);
-    $('frame').src = url;
-  }
-
-  $('frame').addEventListener('load', function () {
-    if (!$('frame').getAttribute('src')) return;
-    clearTimeout(loadTimer);
-    $('loading').hidden = true;
-  });
-
-  $('setup-form').addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var v = $('url').value.trim();
-    if (!URL_RE.test(v)) {
-      $('setup-err').textContent = 'URL harus berbentuk https://script.google.com/macros/s/…/exec';
-      $('setup-err').hidden = false;
-      return;
+    if (d.sensitive) {
+      alerts.appendChild(el('div', { class: 'alert a-sensitive' }, [
+        el('p', {}, [el('strong', { text: 'SENSITIF — tinjau dulu. ' }), el('span', { text: 'Bukan otomatis ditolak.' })])
+      ]));
     }
-    $('setup-err').hidden = true;
-    setUrl(v);
-    start(v, true);
-  });
+    if (d.flagReasons) alerts.appendChild(el('p', { class: 'hint', text: 'Pemicu flag: ' + d.flagReasons }));
 
-  // Menu
-  function toggleMenu(open) {
-    $('menu').hidden = !open;
-    $('menu-btn').setAttribute('aria-expanded', String(open));
+    $('d-meta').textContent = d.code + ' · ' + fmtDate(d.createdAt) + ' · ' + d.category + ' · ' + nf.format(d.storyLength) + ' karakter';
+    $('d-title').textContent = d.title || '(tanpa judul)';
+    $('d-alias').textContent = 'oleh ' + d.alias;
+    $('d-story').textContent = d.story;
+    $('d-status').value = d.status;
+    $('d-note').value = d.adminNote || '';
+    $('d-url').value = d.contentUrl || '';
+    updateUrlHint();
+    $('d-contact').textContent = d.contactOk
+      ? ('Boleh dihubungi' + (d.email ? ': ' + d.email : ' (tidak mengisi email)'))
+      : 'Tidak ingin dihubungi.';
   }
-  $('menu-btn').addEventListener('click', function () { toggleMenu($('menu').hidden); });
-  document.addEventListener('click', function (e) {
-    if (!$('menu').hidden && !$('menu').contains(e.target) && e.target !== $('menu-btn')) toggleMenu(false);
+
+  $('btn-back').addEventListener('click', function () { showView('list'); load(false); });
+
+  $('btn-save').addEventListener('click', function () {
+    if (!state.current) return;
+    var btn = this; btn.disabled = true;
+    var url = $('d-url').value.trim();
+    if (url && !/^https:\/\/[^\s<>"'`]+$/i.test(url)) {
+      btn.disabled = false;
+      $('d-url').focus();
+      return toast('Link harus diawali https:// dan tanpa spasi.', true);
+    }
+    call('updateSubmission', state.current.code, { status: $('d-status').value, note: $('d-note').value, url: url })
+      .then(function (d) { btn.disabled = false; renderDetail(d); toast('Tersimpan ✓'); })
+      .catch(function (e) { btn.disabled = false; toast(e.message, true); });
   });
-  $('m-reload').addEventListener('click', function () { toggleMenu(false); showApp(getUrl()); });
-  $('m-mode').addEventListener('click', function () {
-    toggleMenu(false); setMode('direct'); showLauncher(getUrl(), false); location.assign(getUrl());
-  });
-  $('launcher-frame').addEventListener('click', function () { setMode('frame'); showApp(getUrl()); });
-  $('launcher-change').addEventListener('click', function () { showSetup(getUrl()); });
-  $('m-change').addEventListener('click', function () { toggleMenu(false); $('frame').removeAttribute('src'); showSetup(getUrl()); });
 
-  // Status online/offline
-  function updateOnline() { $('offline').hidden = navigator.onLine; }
-  window.addEventListener('online', function () { updateOnline(); if (getUrl() && getMode() === 'frame') showApp(getUrl()); });
-  window.addEventListener('offline', updateOnline);
-  updateOnline();
-
-  // Mulai
-  var saved = getUrl();
-  if (saved && URL_RE.test(saved)) start(saved, true); else showSetup('');
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  function updateUrlHint() {
+    var tayang = $('d-status').value === 'Sudah tayang';
+    var hasUrl = $('d-url').value.trim() !== '';
+    $('d-url-hint').textContent = tayang
+      ? (hasUrl ? 'Link ini tampil di halaman Cek status pengirim.' : 'Status Sudah tayang — isi link supaya pengirim bisa menonton kontennya.')
+      : 'Link baru tampil ke pengirim setelah status diubah ke Sudah tayang.';
+    $('d-url-hint').classList.toggle('warn', tayang && !hasUrl);
   }
+  $('d-status').addEventListener('change', updateUrlHint);
+  $('d-url').addEventListener('input', updateUrlHint);
+
+  $('btn-mask').addEventListener('click', function () {
+    if (!state.current) return;
+    var btn = this; btn.disabled = true;
+    call('getMaskedText', state.current.code).then(function (text) {
+      btn.disabled = false;
+      $('mask-text').value = text;
+      $('mask-box').hidden = false;
+      return copyText(text).then(function (ok) {
+        toast(ok ? 'Versi tersamar disalin ✓' : 'Tidak bisa menyalin otomatis — salin manual dari kotak di bawah.', !ok);
+        if (!ok) { $('mask-text').focus(); $('mask-text').select(); }
+      });
+    }).catch(function (e) { btn.disabled = false; toast(e.message, true); });
+  });
+
+  // ---------- Hapus permanen ----------
+  $('btn-delete').addEventListener('click', function () {
+    if (!state.current) return;
+    $('del-code').textContent = state.current.code;
+    $('del-input').value = '';
+    $('btn-del-confirm').disabled = true;
+    $('modal-delete').hidden = false;
+    $('del-input').focus();
+  });
+  $('del-input').addEventListener('input', function () {
+    $('btn-del-confirm').disabled = this.value.trim().toUpperCase() !== state.current.code;
+  });
+  $('btn-del-cancel').addEventListener('click', function () { $('modal-delete').hidden = true; });
+  $('btn-del-confirm').addEventListener('click', function () {
+    var btn = this; btn.disabled = true;
+    call('deleteSubmission', state.current.code, $('del-input').value).then(function (r) {
+      $('modal-delete').hidden = true;
+      toast('Kiriman ' + r.code + ' dihapus permanen.');
+      state.current = null;
+      showView('list'); load(false);
+    }).catch(function (e) { btn.disabled = false; toast(e.message, true); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !$('modal-delete').hidden) $('modal-delete').hidden = true;
+  });
+
+  load(false);
 })();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
 </script>
 </body>
 </html>
