@@ -59,6 +59,20 @@
     #menu button:hover, #menu a:hover { background: var(--accent-soft); }
     #offline { position: fixed; left: 12px; right: 68px; bottom: calc(12px + env(safe-area-inset-bottom)); background: var(--ink); color: #fff;
       border-radius: 12px; padding: 10px 14px; font-size: 13.5px; z-index: 9; }
+
+    /* Panduan pasang ke layar utama */
+    .install { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-top: 18px; text-align: left; }
+    .install h2 { font-size: 15px; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+    .install ol { margin: 0; padding: 0; list-style: none; counter-reset: st; }
+    .install li { counter-increment: st; display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 14px; }
+    .install li:first-child { border-top: 0; }
+    .install li::before { content: counter(st); flex: 0 0 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
+      font: 700 12px/22px var(--font); text-align: center; margin-top: 1px; }
+    .ico { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: #fff; border: 1px solid var(--line);
+      vertical-align: middle; margin: 0 2px; color: #0A84FF; }
+    .ico svg { width: 16px; height: 16px; }
+    .install .btn { margin-top: 4px; }
+    .install .done { color: #3E6B41; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -79,6 +93,45 @@
       </form>
     </div>
   </section>
+
+  <!-- Panduan pasang: dipindah oleh JS ke layar yang sedang tampil -->
+  <div class="install" id="install" hidden>
+    <h2>📲 Pasang BCA Admin di layar utama</h2>
+
+    <div data-for="prompt">
+      <p class="muted">Pasang supaya bisa dibuka dari ikon Adit seperti aplikasi biasa.</p>
+      <button class="btn primary" type="button" id="install-btn">Pasang aplikasi</button>
+    </div>
+
+    <ol data-for="ios-safari">
+      <li><span>Ketuk tombol <b>Bagikan</b>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>
+        di bar bawah Safari.</span></li>
+      <li><span>Gulir ke bawah, pilih <b>Tambah ke Layar Utama</b>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>.</span></li>
+      <li><span>Ketuk <b>Tambah</b> di kanan atas. Ikon Adit muncul di layar utama.</span></li>
+    </ol>
+
+    <ol data-for="ios-other">
+      <li><span>Ketuk ikon <b>Bagikan</b>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>
+        di kanan bar alamat.</span></li>
+      <li><span>Pilih <b>Tambahkan ke Layar Utama</b>, lalu <b>Tambah</b>.</span></li>
+      <li><span>Pilihannya tidak ada? Salin link ini dan buka di <b>Safari</b>.
+        <button class="btn ghost" type="button" id="copy-link">Salin link</button></span></li>
+    </ol>
+
+    <ol data-for="android">
+      <li><span>Ketuk menu <b>⋮</b> di kanan atas Chrome.</span></li>
+      <li><span>Pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</span></li>
+      <li><span>Ketuk <b>Instal</b>. Ikon Adit muncul di layar utama.</span></li>
+    </ol>
+
+    <ol data-for="desktop">
+      <li><span>Di Chrome/Edge, klik ikon <b>Instal</b> ⊕ di ujung kanan bar alamat.</span></li>
+      <li><span>Klik <b>Instal</b>. BCA Admin terbuka di jendela sendiri.</span></li>
+    </ol>
+  </div>
 
   <!-- Mode "buka langsung" (default di iPhone/iPad: login Google diblokir di dalam iframe) -->
   <section id="launcher" class="screen" hidden>
@@ -137,6 +190,50 @@
 
   function hideAll() { $('setup').hidden = true; $('app').hidden = true; $('launcher').hidden = true; }
 
+  // ---------- Panduan pasang ke layar utama ----------
+  var deferredPrompt = null;
+  var IS_STANDALONE = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  var IS_ANDROID = /Android/i.test(navigator.userAgent);
+  var IOS_OTHER = IS_IOS && /CriOS|FxiOS|EdgiOS|OPiOS/.test(navigator.userAgent);
+
+  function installVariant() {
+    if (IS_STANDALONE) return '';
+    if (deferredPrompt) return 'prompt';
+    if (IS_IOS) return IOS_OTHER ? 'ios-other' : 'ios-safari';
+    if (IS_ANDROID) return 'android';
+    return 'desktop';
+  }
+  function renderInstall(where) {
+    var box = $('install');
+    var v = installVariant();
+    if (where) where.appendChild(box); // pindahkan ke layar yang sedang tampil
+    box.hidden = !v;
+    Array.prototype.forEach.call(box.querySelectorAll('[data-for]'), function (el) {
+      el.hidden = el.getAttribute('data-for') !== v;
+    });
+  }
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    renderInstall();
+  });
+  window.addEventListener('appinstalled', function () {
+    deferredPrompt = null;
+    $('install').innerHTML = '<p class="done">✓ BCA Admin sudah terpasang. Buka dari ikon Adit di layar utama.</p>';
+  });
+  $('install-btn').addEventListener('click', function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function () { deferredPrompt = null; renderInstall(); });
+  });
+  $('copy-link').addEventListener('click', function () {
+    var btn = this, link = location.href.split('#')[0];
+    function ok() { btn.textContent = 'Tersalin ✓'; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(ok, function () { btn.textContent = link; });
+    } else { btn.textContent = link; }
+  });
+
   // Buka otomatis sekali per sesi; kalau pengguna kembali ke aplikasi, tampilkan tombol (tanpa loop).
   function showLauncher(url, auto) {
     hideAll();
@@ -149,12 +246,15 @@
       already = sessionStorage.getItem('bca_auto_opened') === '1';
       sessionStorage.setItem('bca_auto_opened', '1');
     } catch (e) { /* abaikan */ }
-    if (auto && !already) {
+    // Buka otomatis hanya kalau dibuka dari ikon layar utama; di browser biasa tampilkan
+    // dulu panduan pasang.
+    if (auto && !already && IS_STANDALONE) {
       $('launcher-text').textContent = 'Membuka dashboard…';
       setTimeout(function () { location.assign(url); }, 400);
     } else {
       $('launcher-text').textContent = 'Ketuk tombol di bawah untuk membuka dashboard.';
     }
+    renderInstall($('launcher').querySelector('.box'));
   }
 
   function start(url, auto) {
@@ -164,6 +264,7 @@
   function showSetup(prefill) {
     hideAll();
     $('setup').hidden = false;
+    renderInstall($('setup').querySelector('.box'));
     $('url').value = prefill || '';
   }
 
